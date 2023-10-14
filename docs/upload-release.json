@@ -1,0 +1,44 @@
+{
+  "album_type": "album",
+  "album_name": "Skinny",
+  "release_date": "2014-10-02",
+  "release_date_precision": "day",
+  "performers": [
+    {
+      "id": "sonata-id-of-the-artist"
+    }
+  ],
+  "tracks": {
+    "total_tracks_count": 2,
+    "items": [
+      {
+        "track_name": "WhereTheTreesMeetTheFreeway",
+        "duration_ms": "4310483",
+        "is_explicit": true,
+        "has_lyrics": true,
+        "disc_number": 1,
+        "index": 0,
+        "artists": [
+          {
+            "id": "sonata-id-of-the-artist"
+          }
+        ],
+        "file_id": "mp3_file_name_with track"
+      },
+      {
+        "track_name": "Bubbles",
+        "duration_ms": "242101",
+        "is_explicit": true,
+        "has_lyrics": false,
+        "disc_number": 1,
+        "index": 2,
+        "artists": [
+          {
+            "id": "sonata-id-of-the-artist"
+          }
+        ],
+        "file_id": "mp3_file_name_with track"
+      }
+    ]
+  }
+}
