@@ -4,6 +4,7 @@ import com.odeyalo.sonata.harmony.dto.UploadAlbumReleaseRequest;
 import com.odeyalo.sonata.harmony.support.http.HttpStatuses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -18,7 +19,7 @@ public class UploadReleaseController {
 
     @PostMapping("/album")
     public Mono<ResponseEntity<Object>> uploadAlbum(
-            @RequestPart("body") UploadAlbumReleaseRequest body,
+            @Validated @RequestPart("body") UploadAlbumReleaseRequest body,
             @RequestPart("cover") Mono<FilePart> albumCover
     ) {
         return albumCover
