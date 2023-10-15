@@ -22,6 +22,7 @@ public class UploadAlbumReleaseRequest {
     String albumName;
     @NotNull
     AlbumType albumType;
+    @NotNull
     ReleaseArtistContainerDto performers;
     TrackContainerDto tracks;
 }

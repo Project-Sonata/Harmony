@@ -85,6 +85,18 @@ public class UploadAlbumReleaseEndpointTest {
 
             responseSpec.expectStatus().isBadRequest();
         }
+
+        @Test
+        void shouldReturnBadRequestIfPerformersAreNull() {
+            UploadAlbumReleaseRequest requestBody = prepareValidCustomizableRequestBody()
+                    .performers(null).build();
+
+            MultipartBodyBuilder builder = prepareRequest(requestBody);
+
+            WebTestClient.ResponseSpec responseSpec = sendUploadAlbumRelease(builder);
+
+            responseSpec.expectStatus().isBadRequest();
+        }
     }
 
     private static UploadAlbumReleaseRequest.UploadAlbumReleaseRequestBuilder prepareValidCustomizableRequestBody() {
