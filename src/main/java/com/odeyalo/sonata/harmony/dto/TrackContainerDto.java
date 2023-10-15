@@ -23,7 +23,7 @@ public class TrackContainerDto implements Iterable<TrackDto> {
     @Getter(value = AccessLevel.NONE)
     List<TrackDto> items;
 
-    public TrackContainerDto single(TrackDto item) {
+    public static TrackContainerDto single(TrackDto item) {
         return of(1, singletonList(item));
     }
 
