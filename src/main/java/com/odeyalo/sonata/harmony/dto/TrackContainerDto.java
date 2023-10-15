@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
@@ -21,6 +23,9 @@ public class TrackContainerDto implements Iterable<TrackDto> {
     @Getter(value = AccessLevel.NONE)
     List<TrackDto> items;
 
+    public TrackContainerDto single(TrackDto item) {
+        return of(1, singletonList(item));
+    }
 
     public int size() {
         return items.size();
