@@ -17,7 +17,26 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TrackContainerDto implements Iterable<TrackDto> {
     int totalTracksCount;
+    @Singular
+    @Getter(value = AccessLevel.NONE)
     List<TrackDto> items;
+
+
+    public int size() {
+        return items.size();
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
+    public boolean contains(Object o) {
+        return items.contains(o);
+    }
+
+    public TrackDto get(int index) {
+        return items.get(index);
+    }
 
     @Override
     @NotNull
