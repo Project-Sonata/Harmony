@@ -24,5 +24,6 @@ public class UploadAlbumReleaseRequest {
     AlbumType albumType;
     @NotNull
     ReleaseArtistContainerDto performers;
+    @NotNull
     TrackContainerDto tracks;
 }
