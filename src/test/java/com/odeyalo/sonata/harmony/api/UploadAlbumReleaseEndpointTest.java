@@ -33,11 +33,16 @@ public class UploadAlbumReleaseEndpointTest {
 
         @Test
         void shouldReturnAcceptedStatus() {
-            MultipartBodyBuilder builder = prepareValidRequestBody();
-
-            WebTestClient.ResponseSpec responseSpec = sendUploadAlbumRelease(builder);
+            WebTestClient.ResponseSpec responseSpec = sendRequestWithValidData();
 
             responseSpec.expectStatus().isAccepted();
+        }
+
+        @NotNull
+        private WebTestClient.ResponseSpec sendRequestWithValidData() {
+            MultipartBodyBuilder builder = prepareValidRequestBody();
+
+            return sendUploadAlbumRelease(builder);
         }
 
         @NotNull
