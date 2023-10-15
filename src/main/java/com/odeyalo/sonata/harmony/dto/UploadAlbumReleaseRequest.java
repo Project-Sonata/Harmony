@@ -20,6 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class UploadAlbumReleaseRequest {
     @NotNull
     String albumName;
+    @NotNull
     AlbumType albumType;
     ReleaseArtistContainerDto performers;
     TrackContainerDto tracks;
