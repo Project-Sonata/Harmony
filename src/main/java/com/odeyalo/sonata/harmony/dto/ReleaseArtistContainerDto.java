@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.core.annotation.AliasFor;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -23,7 +22,7 @@ public class ReleaseArtistContainerDto implements Iterable<ReleaseArtistDto> {
     @Builder.Default
     List<ReleaseArtistDto> artists = Collections.emptyList();
 
-    public static ReleaseArtistContainerDto single(ReleaseArtistDto artists) {
+    public static ReleaseArtistContainerDto solo(ReleaseArtistDto artists) {
         return multiple(List.of(artists));
     }
 
