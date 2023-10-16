@@ -21,11 +21,31 @@ public class R2dbcAlbumReleaseRepositoryTest {
 
     @Test
     void shouldSaveEntityAndGenerateId() {
-        var albumReleaseEntity = builder().albumName("dudeness").build();
+        var albumReleaseEntity = createValidAlbumWithEmptyId();
 
         testable.save(albumReleaseEntity)
                 .as(StepVerifier::create)
                 .expectNextMatches(saved -> saved.getId() != null)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldSaveAndBePersistent() {
+        var albumReleaseEntity = createValidAlbumWithEmptyId();
+        // when
+        testable.save(albumReleaseEntity)
+                .as(StepVerifier::create)
+                .expectNextCount(1)
+                .verifyComplete();
+
+        // then
+        testable.findById(albumReleaseEntity.getId())
+                .as(StepVerifier::create)
+                .expectNext(albumReleaseEntity)
+                .verifyComplete();
+    }
+
+    private static AlbumReleaseEntity createValidAlbumWithEmptyId() {
+        return builder().albumName("dudeness").build();
     }
 }
