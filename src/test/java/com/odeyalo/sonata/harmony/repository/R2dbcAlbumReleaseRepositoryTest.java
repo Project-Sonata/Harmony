@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.repository;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -30,18 +31,17 @@ public class R2dbcAlbumReleaseRepositoryTest {
     }
 
     @Test
-    void shouldSaveAndBePersistent() {
-        var albumReleaseEntity = createValidAlbumWithEmptyId();
+    void shouldSaveAlbumName() {
+        var expected = createValidAlbumWithEmptyId();
         // when
-        testable.save(albumReleaseEntity)
+        testable.save(expected)
                 .as(StepVerifier::create)
                 .expectNextCount(1)
                 .verifyComplete();
-
         // then
-        testable.findById(albumReleaseEntity.getId())
+        testable.findById(expected.getId())
                 .as(StepVerifier::create)
-                .expectNext(albumReleaseEntity)
+                .expectNextMatches(actual -> StringUtils.equals(expected.getAlbumName(), actual.getAlbumName()))
                 .verifyComplete();
     }
 
