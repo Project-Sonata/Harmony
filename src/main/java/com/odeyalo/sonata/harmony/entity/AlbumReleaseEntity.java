@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.entity;
 
+import com.odeyalo.sonata.harmony.model.AlbumType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
@@ -17,4 +18,6 @@ public class AlbumReleaseEntity {
     Long id;
     @Column("album_name")
     String albumName;
+    @Column("album_type")
+    AlbumType albumType;
 }
