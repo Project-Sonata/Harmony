@@ -20,4 +20,6 @@ public class AlbumReleaseEntity {
     String albumName;
     @Column("album_type")
     AlbumType albumType;
+    @Column("duration_ms")
+    Long durationMs;
 }
