@@ -54,7 +54,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
 
     @Test
     void shouldSaveAlbumType() {
-        AlbumReleaseEntity expected = createValidAlbumWithEmptyId();
+        var expected = createValidAlbumWithEmptyId();
 
         insertReleases(expected);
 
