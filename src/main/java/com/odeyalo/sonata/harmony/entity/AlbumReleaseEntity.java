@@ -22,4 +22,6 @@ public class AlbumReleaseEntity {
     AlbumType albumType;
     @Column("duration_ms")
     Long durationMs;
+    @Column("total_tracks_count")
+    Integer totalTracksCount;
 }

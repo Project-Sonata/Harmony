@@ -3,8 +3,6 @@ package com.odeyalo.sonata.harmony.repository;
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
-import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -77,10 +75,23 @@ public class R2dbcAlbumReleaseRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSaveTotalTracksCount() {
+        var expected = createValidAlbumWithEmptyId();
+
+        insertReleases(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getTotalTracksCount(), actual.getTotalTracksCount()))
+                .verifyComplete();
+    }
+
     private static AlbumReleaseEntity createValidAlbumWithEmptyId() {
         return builder().albumName("dudeness")
                 .albumType(AlbumType.SINGLE)
                 .durationMs(1000L)
+                .totalTracksCount(2)
                 .build();
     }
 
