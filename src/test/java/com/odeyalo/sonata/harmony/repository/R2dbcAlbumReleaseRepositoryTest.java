@@ -59,7 +59,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
 
         testable.findById(expected.getId())
                 .as(StepVerifier::create)
-                .expectNextMatches(actual -> expected.getAlbumType() == actual.getAlbumType())
+                .expectNextMatches(actual -> Objects.equals(expected.getAlbumType(), actual.getAlbumType()))
                 .verifyComplete();
     }
 
