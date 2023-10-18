@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity.builder;
 
 @DataR2dbcTest
@@ -39,10 +41,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
     void shouldSaveAlbumName() {
         var expected = createValidAlbumWithEmptyId();
         // when
-        testable.save(expected)
-                .as(StepVerifier::create)
-                .expectNextCount(1)
-                .verifyComplete();
+        insertReleases(expected);
         // then
         testable.findById(expected.getId())
                 .as(StepVerifier::create)
@@ -52,6 +51,13 @@ public class R2dbcAlbumReleaseRepositoryTest {
 
     private static AlbumReleaseEntity createValidAlbumWithEmptyId() {
         return builder().albumName("dudeness").build();
+    }
+
+    private void insertReleases(AlbumReleaseEntity... entities) {
+        testable.saveAll(List.of(entities))
+                .as(StepVerifier::create)
+                .expectNextCount(entities.length)
+                .verifyComplete();
     }
 
     @TestConfiguration
