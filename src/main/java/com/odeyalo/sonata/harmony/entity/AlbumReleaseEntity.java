@@ -1,9 +1,11 @@
 package com.odeyalo.sonata.harmony.entity;
 
 import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -24,4 +26,14 @@ public class AlbumReleaseEntity {
     Long durationMs;
     @Column("total_tracks_count")
     Integer totalTracksCount;
+    @Transient
+    ReleaseDate releaseDate;
+    // A columns to represent the release date
+    // written here because of Spring R2DBC does not support embedded values.
+    // It can't be achieved using AfterConvertCallback invocation due to lack of Row data, e.g. the values from database cannot be accessed in callback
+    // also, can't do this using Spring Converter<ReleaseDate, OutboundRow>
+    @Column("release_date")
+    String releaseDateAsString;
+    @Column("release_date_precision")
+    String releaseDatePrecision;
 }
