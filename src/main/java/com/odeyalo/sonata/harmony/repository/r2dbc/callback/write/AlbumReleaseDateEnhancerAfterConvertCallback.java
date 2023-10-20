@@ -2,16 +2,22 @@ package com.odeyalo.sonata.harmony.repository.r2dbc.callback.write;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateDecoder;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateRowInfo;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.r2dbc.mapping.event.AfterConvertCallback;
 import org.springframework.data.relational.core.sql.SqlIdentifier;
-import org.springframework.util.Assert;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-@ReadingConverter
+@Component
 public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConvertCallback<AlbumReleaseEntity> {
+    private final ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder;
+
+    public AlbumReleaseDateEnhancerAfterConvertCallback(ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder) {
+        this.releaseDateDecoder = releaseDateDecoder;
+    }
 
     @Override
     @NotNull
@@ -19,37 +25,17 @@ public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConver
                                                         @NotNull SqlIdentifier table) {
 
         String releaseDate = entity.getReleaseDateAsString();
-        ReleaseDate.Precision precision = ReleaseDate.Precision.valueOf(entity.getReleaseDatePrecision());
+        ReleaseDate.Precision precision = toPrecision(entity);
 
-        Assert.notNull(releaseDate, "Release date cannot be null!");
-        Assert.notNull(precision, "Release date precision cannot be null!");
-        ReleaseDate date = null;
+        ReleaseDate date = releaseDateDecoder.decodeReleaseDate(ReleaseDateRowInfo.of(releaseDate, precision));
 
-        if (precision == ReleaseDate.Precision.YEAR) {
-            date = ReleaseDate.onlyYear(Integer.parseInt(releaseDate));
-        }
-
-        if (precision == ReleaseDate.Precision.MONTH) {
-            String[] yearAndMonth = releaseDate.split("-");
-            int year = Integer.parseInt(yearAndMonth[0]);
-            int month = Integer.parseInt(yearAndMonth[1]);
-
-            date = ReleaseDate.withMonth(month, year);
-        }
-
-        if (precision == ReleaseDate.Precision.DAY) {
-            String[] yearAndMonthAndDay = releaseDate.split("-");
-            int year = Integer.parseInt(yearAndMonthAndDay[0]);
-            int month = Integer.parseInt(yearAndMonthAndDay[1]);
-            int day = Integer.parseInt(yearAndMonthAndDay[2]);
-
-            date = ReleaseDate.withDay(day, month, year);
-        }
-
-        if (date == null) {
-            throw new IllegalStateException("Cannot parse release date. The precision is unknown: " + precision);
-        }
         entity.setReleaseDate(date);
+
         return Mono.just(entity);
+    }
+
+    @NotNull
+    private static ReleaseDate.Precision toPrecision(@NotNull AlbumReleaseEntity entity) {
+        return ReleaseDate.Precision.valueOf(entity.getReleaseDatePrecision());
     }
 }
