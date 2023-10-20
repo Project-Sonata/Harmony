@@ -1,14 +1,11 @@
 package com.odeyalo.sonata.harmony.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Value
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor(staticName = "of", access = AccessLevel.PROTECTED)
 @Builder
 public class ReleaseDate {
     @Nullable

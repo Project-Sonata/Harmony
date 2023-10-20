@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FormattedString2ReleaseDateConverterTest {
 
-    FormatedString2ReleaseDateConverter converter = new FormatedString2ReleaseDateConverter();
+    FormattedString2ReleaseDateConverter converter = new FormattedString2ReleaseDateConverter();
 
     @Test
     void shouldDecodeReleaseDateForDayPrecisionAndReturnValidString() {
@@ -41,6 +41,29 @@ class FormattedString2ReleaseDateConverterTest {
     }
 
     @Test
-    void encodeReleaseDate() {
+    void shouldEncodeReleaseDateAndAddZeroToDayIfDateIsLowerThan10() {
+        ReleaseDate expected = ReleaseDate.withDay(3, 12, 2012);
+
+        String actual = converter.encodeReleaseDate(expected);
+
+        assertThat(actual).isEqualTo("2012-12-03");
+    }
+
+    @Test
+    void shouldEncodeReleaseDateAndAddZeroToMonthIfDateIsLowerThan10() {
+        ReleaseDate expected = ReleaseDate.withDay(3, 9, 2012);
+
+        String actual = converter.encodeReleaseDate(expected);
+
+        assertThat(actual).isEqualTo("2012-09-03");
+    }
+
+    @Test
+    void shouldEncodeReleaseDateToValidString() {
+        ReleaseDate expected = ReleaseDate.withDay(30, 12, 2012);
+
+        String actual = converter.encodeReleaseDate(expected);
+
+        assertThat(actual).isEqualTo("2012-12-30");
     }
 }

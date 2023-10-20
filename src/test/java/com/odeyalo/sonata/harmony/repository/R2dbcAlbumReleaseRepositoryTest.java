@@ -6,6 +6,10 @@ import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.AlbumReleaseDateEnhancerAfterConvertCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.FormattedString2ReleaseDateConverter;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateDecoder;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateEncoder;
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateRowInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -123,6 +127,16 @@ public class R2dbcAlbumReleaseRepositoryTest {
             AlbumReleaseDateEnhancerAfterConvertCallback.class
     })
     public static class Configuration {
+
+        @Bean
+        public ReleaseDateEncoder<String> releaseDateEncoder() {
+            return new FormattedString2ReleaseDateConverter();
+        }
+
+        @Bean
+        public ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder() {
+            return new FormattedString2ReleaseDateConverter();
+        }
 
         @Bean
         public R2dbcAlbumReleaseRepository r2dbcAlbumReleaseRepository(R2dbcAlbumReleaseRepositoryDelegate delegate) {
