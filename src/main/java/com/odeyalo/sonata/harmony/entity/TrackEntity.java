@@ -24,4 +24,6 @@ public class TrackEntity {
     @Column("has_lyrics")
     @Accessors(fluent = true)
     boolean hasLyrics;
+    @Column("disc_number")
+    Integer discNumber;
 }
