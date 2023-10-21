@@ -40,6 +40,18 @@ public class R2dbcTrackRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSaveDurationMs() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getDurationMs(), actual.getDurationMs()))
+                .verifyComplete();
+    }
+
     private void insertTracks(TrackEntity... entities) {
         testable.saveAll(List.of(entities))
                 .as(StepVerifier::create)
@@ -50,6 +62,7 @@ public class R2dbcTrackRepositoryTest {
     private static TrackEntity generateTrackWithoutId() {
         return TrackEntity.builder()
                 .name("nothing")
+                .durationMs(1000L)
                 .build();
     }
 }
