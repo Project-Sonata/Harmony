@@ -65,6 +65,25 @@ public class R2dbcArtistRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldFindBySonataId() {
+        var expected = generateArtistWithoutId();
+
+        insertArtists(expected);
+
+        testable.findBySonataId(expected.getSonataId())
+                .as(StepVerifier::create)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyIfSonataIdDoesNotExist() {
+        testable.findBySonataId("not_exist")
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
     private void insertArtists(ArtistEntity... artists) {
         testable.saveAll(List.of(artists))
                 .as(StepVerifier::create)
