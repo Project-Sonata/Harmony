@@ -10,10 +10,13 @@ import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Objects;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataR2dbcTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -132,7 +135,6 @@ public class R2dbcArtistRepositoryTest {
 
     @Test
     void shouldFindById() {
-
         var artist = generateArtistWithoutId();
 
         insertArtists(artist);
@@ -150,6 +152,45 @@ public class R2dbcArtistRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldFindAllById() {
+        var artist1 = generateArtistWithoutId();
+        var artist2 = sampleArtist2();
+
+        insertArtists(artist1, artist2);
+
+        List<ArtistEntity> foundArtists = testable
+                .findAllById(Flux.just(artist1.getId(), artist2.getId()))
+                .collectList().block();
+
+        // Do not use the StepVerifier here because findAll* methods do not guarantee order
+        assertThat(foundArtists).containsAll(List.of(artist1, artist2));
+    }
+
+    @Test
+    void shouldReturnEmptyListIfNothingIsFound() {
+        List<ArtistEntity> foundArtists = testable
+                .findAllById(Flux.just(1L, 2L))
+                .collectList().block();
+
+        // Do not use the StepVerifier here because findAll* methods do not guarantee order
+        assertThat(foundArtists).isEmpty();
+    }
+
+    @Test
+    void shouldReturnListOnlyWithElementsThatWasFound() {
+        var artist = generateArtistWithoutId();
+
+        insertArtists(artist);
+
+        List<ArtistEntity> foundArtists = testable
+                .findAllById(Flux.just(-1L, artist.getId()))
+                .collectList().block();
+
+        // Do not use the StepVerifier here because findAll* methods do not guarantee order
+        assertThat(foundArtists).contains(artist);
+    }
+
     private void insertArtists(ArtistEntity... artists) {
         testable.saveAll(List.of(artists))
                 .as(StepVerifier::create)
@@ -159,6 +200,10 @@ public class R2dbcArtistRepositoryTest {
 
     private static ArtistEntity generateArtistWithoutId() {
         return ArtistEntity.builder().sonataId("something").name("Lil Peep").build();
+    }
+
+    private static ArtistEntity sampleArtist2() {
+        return ArtistEntity.builder().sonataId("unique_id").name("bones").build();
     }
 
     @TestConfiguration
