@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.entity;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -20,4 +21,7 @@ public class TrackEntity {
     Long durationMs;
     @Column("is_explicit")
     boolean explicit;
+    @Column("has_lyrics")
+    @Accessors(fluent = true)
+    boolean hasLyrics;
 }

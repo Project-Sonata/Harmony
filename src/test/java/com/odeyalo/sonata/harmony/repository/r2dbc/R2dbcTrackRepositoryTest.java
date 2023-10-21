@@ -64,6 +64,18 @@ public class R2dbcTrackRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSaveHasLyricsColumn() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.hasLyrics(), actual.hasLyrics()))
+                .verifyComplete();
+    }
+
     private void insertTracks(TrackEntity... entities) {
         testable.saveAll(List.of(entities))
                 .as(StepVerifier::create)
@@ -76,6 +88,7 @@ public class R2dbcTrackRepositoryTest {
                 .name("nothing")
                 .durationMs(1000L)
                 .explicit(true)
+                .hasLyrics(true)
                 .build();
     }
 }
