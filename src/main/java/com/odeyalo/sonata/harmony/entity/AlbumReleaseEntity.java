@@ -28,6 +28,8 @@ public class AlbumReleaseEntity {
     Integer totalTracksCount;
     @Transient
     ReleaseDate releaseDate;
+    @Transient
+    ArtistContainerEntity artists;
     // A columns to represent the release date
     // written here because of Spring R2DBC does not support embedded values.
     // It can't be achieved using AfterConvertCallback invocation due to lack of Row data, e.g. the values from database cannot be accessed in callback
