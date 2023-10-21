@@ -5,5 +5,6 @@ CREATE TABLE tracks
     duration_ms BIGINT NOT NULL,
     is_explicit BOOLEAN NOT NULL,
     has_lyrics BOOLEAN NOT NULL,
-    disc_number INTEGER NOT NULL
+    disc_number INTEGER NOT NULL,
+    index INTEGER NOT NULL
 );

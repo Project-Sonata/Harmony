@@ -26,4 +26,6 @@ public class TrackEntity {
     boolean hasLyrics;
     @Column("disc_number")
     Integer discNumber;
+    @Column("index")
+    Integer index;
 }
