@@ -11,6 +11,9 @@ import reactor.test.StepVerifier;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataR2dbcTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
@@ -146,6 +149,36 @@ public class R2dbcTrackRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldFindAllById() {
+        var firstTrack = generateTrackWithoutId();
+        var secondTrack = sampleTrack2();
+
+        insertTracks(firstTrack, secondTrack);
+
+        List<TrackEntity> actual = testable.findAllById(List.of(firstTrack.getId(), secondTrack.getId())).collectList().block();
+
+        assertThat(actual).containsAll(List.of(firstTrack, secondTrack));
+    }
+
+    @Test
+    void shouldFindOnlyExisting() {
+        var firstTrack = generateTrackWithoutId();
+
+        insertTracks(firstTrack);
+
+        List<TrackEntity> actual = testable.findAllById(List.of(firstTrack.getId(), -1L)).collectList().block();
+
+        assertThat(actual).containsAll(singletonList(firstTrack));
+    }
+
+    @Test
+    void shouldReturnEmptyListIfNothingIsFound() {
+        List<TrackEntity> actual = testable.findAllById(List.of(-1L, -2L)).collectList().block();
+
+        assertThat(actual).isEmpty();
+    }
+
     private void insertTracks(TrackEntity... entities) {
         testable.saveAll(List.of(entities))
                 .as(StepVerifier::create)
@@ -161,6 +194,17 @@ public class R2dbcTrackRepositoryTest {
                 .hasLyrics(true)
                 .discNumber(1)
                 .index(0)
+                .build();
+    }
+
+    private static TrackEntity sampleTrack2() {
+        return TrackEntity.builder()
+                .name("evening")
+                .durationMs(1020L)
+                .explicit(false)
+                .hasLyrics(true)
+                .discNumber(1)
+                .index(1)
                 .build();
     }
 }
