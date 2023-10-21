@@ -90,13 +90,28 @@ public class R2dbcTrackRepositoryTest {
 
     @Test
     void shouldSaveTrackIndex() {
-        TrackEntity expected = generateTrackWithoutId();
+        var expected = generateTrackWithoutId();
 
         insertTracks(expected);
 
         testable.findById(expected.getId())
                 .as(StepVerifier::create)
                 .expectNextMatches(actual -> Objects.equals(expected.getIndex(), actual.getIndex()))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDeleteAll() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.deleteAll()
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
                 .verifyComplete();
     }
 
