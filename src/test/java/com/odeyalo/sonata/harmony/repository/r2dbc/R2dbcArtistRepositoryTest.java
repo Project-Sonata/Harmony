@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc;
 
 import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcArtistRepositoryDelegate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.core.publisher.Flux;
@@ -209,10 +211,9 @@ public class R2dbcArtistRepositoryTest {
     @TestConfiguration
     public static class Configuration {
 
-//        @Bean
-//        public R2dbcArtistRepository r2dbcArtistRepository() {
-//            return new R2dbcArtistRepository();
-//        }
-
+        @Bean
+        public R2dbcArtistRepository r2dbcArtistRepository(R2dbcArtistRepositoryDelegate delegate) {
+            return new R2dbcArtistRepository(delegate);
+        }
     }
 }
