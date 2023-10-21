@@ -1,10 +1,14 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc;
 
 import com.odeyalo.sonata.harmony.entity.TrackEntity;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcTrackRepositoryDelegate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
@@ -17,7 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataR2dbcTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
+@Import(R2dbcTrackRepositoryTest.Configuration.class)
 public class R2dbcTrackRepositoryTest {
+
     @Autowired
     R2dbcTrackRepository testable;
 
@@ -206,5 +212,15 @@ public class R2dbcTrackRepositoryTest {
                 .discNumber(1)
                 .index(1)
                 .build();
+    }
+
+    @TestConfiguration
+    static class Configuration {
+
+        @Bean
+        public R2dbcTrackRepository r2dbcTrackRepository(R2dbcTrackRepositoryDelegate delegate) {
+            return new R2dbcTrackRepository(delegate);
+        }
+
     }
 }
