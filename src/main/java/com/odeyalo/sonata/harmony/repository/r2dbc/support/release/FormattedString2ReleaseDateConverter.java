@@ -64,6 +64,7 @@ public class FormattedString2ReleaseDateConverter implements ReleaseDateConverte
         return appendForMonth(releaseDate, builder)
                 .appendDay(releaseDate.getDay());
     }
+
     private static class ReleaseDateStringBuilder {
 
         private final String spliterator;
