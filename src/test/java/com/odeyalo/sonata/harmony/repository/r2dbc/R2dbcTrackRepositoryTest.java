@@ -8,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+import java.util.Objects;
+
 @DataR2dbcTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
@@ -25,6 +28,24 @@ public class R2dbcTrackRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSaveName() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getName(), actual.getName()))
+                .verifyComplete();
+    }
+
+    private void insertTracks(TrackEntity... entities) {
+        testable.saveAll(List.of(entities))
+                .as(StepVerifier::create)
+                .expectNextCount(entities.length)
+                .verifyComplete();
+    }
 
     private static TrackEntity generateTrackWithoutId() {
         return TrackEntity.builder()
