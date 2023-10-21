@@ -18,4 +18,6 @@ public class TrackEntity {
     String name;
     @Column("duration_ms")
     Long durationMs;
+    @Column("is_explicit")
+    boolean explicit;
 }
