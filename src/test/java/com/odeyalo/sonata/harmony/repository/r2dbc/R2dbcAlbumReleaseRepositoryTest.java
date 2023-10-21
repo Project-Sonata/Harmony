@@ -1,8 +1,9 @@
-package com.odeyalo.sonata.harmony.repository;
+package com.odeyalo.sonata.harmony.repository.r2dbc;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
+import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumReleaseDateEnhancerAfterConvertCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;

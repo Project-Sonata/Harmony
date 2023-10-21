@@ -1,6 +1,7 @@
-package com.odeyalo.sonata.harmony.repository;
+package com.odeyalo.sonata.harmony.repository.r2dbc;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
