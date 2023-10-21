@@ -155,6 +155,18 @@ public class R2dbcTrackRepositoryTest {
     }
 
     @Test
+    void shouldReturnAlbum() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getAlbum(), actual.getAlbum()))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDeleteAll() {
         var expected = generateTrackWithoutId();
 

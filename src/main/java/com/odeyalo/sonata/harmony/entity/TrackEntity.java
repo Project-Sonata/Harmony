@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -30,4 +31,6 @@ public class TrackEntity {
     Integer index;
     @Column("album_id")
     Long albumId;
+    @Transient
+    AlbumReleaseEntity album;
 }
