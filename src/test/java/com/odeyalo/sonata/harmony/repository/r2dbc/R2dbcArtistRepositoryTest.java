@@ -130,6 +130,26 @@ public class R2dbcArtistRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldFindById() {
+
+        var artist = generateArtistWithoutId();
+
+        insertArtists(artist);
+
+        testable.findById(artist.getId())
+                .as(StepVerifier::create)
+                .expectNext(artist)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyIfIdDoesNotExist() {
+        testable.findById(-1L)
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
     private void insertArtists(ArtistEntity... artists) {
         testable.saveAll(List.of(artists))
                 .as(StepVerifier::create)
