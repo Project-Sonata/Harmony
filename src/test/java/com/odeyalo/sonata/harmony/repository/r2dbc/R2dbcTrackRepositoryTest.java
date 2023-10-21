@@ -115,6 +115,37 @@ public class R2dbcTrackRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldDeleteByIdIfExist() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.deleteById(expected.getId())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldNotDeleteByIdIfNotExist() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.deleteById(-1L)
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
     private void insertTracks(TrackEntity... entities) {
         testable.saveAll(List.of(entities))
                 .as(StepVerifier::create)
