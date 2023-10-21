@@ -16,8 +16,6 @@ import static java.lang.String.format;
 @Component
 public class FormattedString2ReleaseDateConverter implements ReleaseDateConverter<ReleaseDateRowInfo, String> {
     private static final String DATE_SPLITERATOR = "-";
-    private static final String MONTH_AWARE_RELEASE_DATE_FORMAT_PATTERN = "yyyy-MM";
-    private static final String YEAR_AWARE_RELEASE_DATE_FORMAT_PATTERN = "yyyy-MM-dd";
 
     @Override
     @NotNull
@@ -27,9 +25,9 @@ public class FormattedString2ReleaseDateConverter implements ReleaseDateConverte
 
         try {
             return switch (precision) {
-                case YEAR -> parseYearAwareReleaseDate(releaseDate);
-                case MONTH -> parseMonthAwareReleaseDate(releaseDate);
-                case DAY -> parseDayAwareReleaseDate(releaseDate);
+                case YEAR -> ReleaseDateParserSupport.parseYearAwareReleaseDate(releaseDate);
+                case MONTH -> ReleaseDateParserSupport.parseMonthAwareReleaseDate(releaseDate);
+                case DAY -> ReleaseDateParserSupport.parseDayAwareReleaseDate(releaseDate);
             };
         } catch (Exception ex) {
             throw new IllegalArgumentException(format("Precision hint with date mismatch. Expected date to be: %s but was: %s", precision.name(), releaseDate));
@@ -67,36 +65,8 @@ public class FormattedString2ReleaseDateConverter implements ReleaseDateConverte
                 .appendDay(releaseDate.getDay());
     }
 
-    private static ReleaseDate parseYearAwareReleaseDate(String releaseDate) {
-        LocalDate localDate = getLocalDate("yyyy", releaseDate);
-
-        return onlyYear(localDate.getYear());
-    }
-
-    private static ReleaseDate parseMonthAwareReleaseDate(String releaseDate) {
-        LocalDate localDate = getLocalDate(MONTH_AWARE_RELEASE_DATE_FORMAT_PATTERN, releaseDate);
-
-        return withMonth(localDate.getMonthValue(), localDate.getYear());
-    }
-
-    private static ReleaseDate parseDayAwareReleaseDate(String releaseDate) {
-        LocalDate localDate = getLocalDate(YEAR_AWARE_RELEASE_DATE_FORMAT_PATTERN, releaseDate);
-
-        return withDay(localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());
-    }
-
-    private static LocalDate getLocalDate(String pattern, String releaseDate) {
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        return parseAsLocalDate(releaseDate, format);
-    }
-
-
-    @SneakyThrows
-    private static LocalDate parseAsLocalDate(String releaseDate, SimpleDateFormat format) {
-        return format.parse(releaseDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
     private static class ReleaseDateStringBuilder {
+
         private final String spliterator;
         private final StringBuilder builder = new StringBuilder();
 
@@ -125,7 +95,7 @@ public class FormattedString2ReleaseDateConverter implements ReleaseDateConverte
         }
 
         public ReleaseDateStringBuilder appendYear(Integer year) {
-            Assert.notNull(year, "Month cannot be null!");
+            Assert.notNull(year, "Year cannot be null!");
             builder.append(year);
             return this;
         }
@@ -137,5 +107,42 @@ public class FormattedString2ReleaseDateConverter implements ReleaseDateConverte
         private void appendZeroIfNecessary(Integer num) {
             builder.append(num > 10 ? num : "0" + num);
         }
+
+    }
+
+    private static class ReleaseDateParserSupport {
+        private static final String MONTH_AWARE_RELEASE_DATE_FORMAT_PATTERN = "yyyy-MM";
+        private static final String DAY_AWARE_RELEASE_DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+        private static final String YEAR_ONLY_RELEASE_DATE_FORMAT_PATTERN = "yyyy";
+
+        public static ReleaseDate parseYearAwareReleaseDate(String releaseDate) {
+            LocalDate localDate = getLocalDate(YEAR_ONLY_RELEASE_DATE_FORMAT_PATTERN, releaseDate);
+
+            return onlyYear(localDate.getYear());
+        }
+
+        public static ReleaseDate parseMonthAwareReleaseDate(String releaseDate) {
+            LocalDate localDate = getLocalDate(MONTH_AWARE_RELEASE_DATE_FORMAT_PATTERN, releaseDate);
+
+            return withMonth(localDate.getMonthValue(), localDate.getYear());
+        }
+
+        public static ReleaseDate parseDayAwareReleaseDate(String releaseDate) {
+            LocalDate localDate = getLocalDate(DAY_AWARE_RELEASE_DATE_FORMAT_PATTERN, releaseDate);
+
+            return withDay(localDate.getDayOfMonth(), localDate.getMonthValue(), localDate.getYear());
+        }
+
+        public static LocalDate getLocalDate(String pattern, String releaseDate) {
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
+            return parseAsLocalDate(releaseDate, format);
+        }
+
+        @SneakyThrows
+        private static LocalDate parseAsLocalDate(String releaseDate, SimpleDateFormat format) {
+            return format.parse(releaseDate).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        }
     }
 }
+
+

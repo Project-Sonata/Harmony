@@ -1,4 +1,4 @@
-package com.odeyalo.sonata.harmony.repository.r2dbc.callback.write;
+package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
