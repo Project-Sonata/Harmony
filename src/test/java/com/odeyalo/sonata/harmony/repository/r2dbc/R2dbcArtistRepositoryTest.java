@@ -84,13 +84,58 @@ public class R2dbcArtistRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldDeleteAll() {
+        var artist = generateArtistWithoutId();
+
+        insertArtists(artist);
+
+        testable.deleteAll()
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(artist.getId())
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldDeleteById() {
+        var artist = generateArtistWithoutId();
+
+        insertArtists(artist);
+
+        testable.deleteById(artist.getId())
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(artist.getId())
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldNotDeleteAnythingIfIdDoesNotExist() {
+        var artist = generateArtistWithoutId();
+
+        insertArtists(artist);
+
+        testable.deleteById(-1L)
+                .as(StepVerifier::create)
+                .verifyComplete();
+
+        testable.findById(artist.getId())
+                .as(StepVerifier::create)
+                .expectNext(artist)
+                .verifyComplete();
+    }
+
     private void insertArtists(ArtistEntity... artists) {
         testable.saveAll(List.of(artists))
                 .as(StepVerifier::create)
                 .expectNextCount(artists.length)
                 .verifyComplete();
     }
-
 
     private static ArtistEntity generateArtistWithoutId() {
         return ArtistEntity.builder().sonataId("something").name("Lil Peep").build();
