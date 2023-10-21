@@ -28,4 +28,6 @@ public class TrackEntity {
     Integer discNumber;
     @Column("index")
     Integer index;
+    @Column("album_id")
+    Long albumId;
 }

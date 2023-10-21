@@ -1,7 +1,14 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc;
 
+import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
+import com.odeyalo.sonata.harmony.entity.ArtistEntity;
 import com.odeyalo.sonata.harmony.entity.TrackEntity;
+import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.model.ReleaseDate;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcTrackRepositoryDelegate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
+import testing.spring.R2dbcEntityCallbackConfiguration;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,11 +29,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataR2dbcTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
-@Import(R2dbcTrackRepositoryTest.Configuration.class)
+@Import(value = {
+        R2dbcTrackRepositoryTest.Configuration.class,
+        R2dbcEntityCallbackConfiguration.class
+})
 public class R2dbcTrackRepositoryTest {
 
     @Autowired
     R2dbcTrackRepository testable;
+
+    @Autowired
+    R2dbcAlbumReleaseRepositoryDelegate albumReleaseRepository;
+
+    private static AlbumReleaseEntity existingAlbum;
+
+    @BeforeEach
+    void setUp() {
+        AlbumReleaseEntity album = AlbumReleaseEntity.builder()
+                .albumName("Berry is on top")
+                .totalTracksCount(2)
+                .releaseDate(ReleaseDate.onlyYear(2023))
+                .albumType(AlbumType.EPISODE)
+                .durationMs(4000523L)
+                .artists(ArtistContainerEntity.solo(ArtistEntity.builder()
+                        .sonataId("hello")
+                        .name("Peep")
+                        .build()))
+                .build();
+        existingAlbum = albumReleaseRepository.save(album).block();
+    }
+
 
     @Test
     void shouldGenerateId() {
@@ -106,6 +139,18 @@ public class R2dbcTrackRepositoryTest {
         testable.findById(expected.getId())
                 .as(StepVerifier::create)
                 .expectNextMatches(actual -> Objects.equals(expected.getIndex(), actual.getIndex()))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldSaveAlbumId() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getAlbumId(), actual.getAlbumId()))
                 .verifyComplete();
     }
 
@@ -200,6 +245,7 @@ public class R2dbcTrackRepositoryTest {
                 .hasLyrics(true)
                 .discNumber(1)
                 .index(0)
+                .albumId(existingAlbum.getId())
                 .build();
     }
 
@@ -211,6 +257,7 @@ public class R2dbcTrackRepositoryTest {
                 .hasLyrics(true)
                 .discNumber(1)
                 .index(1)
+                .albumId(existingAlbum.getId())
                 .build();
     }
 
