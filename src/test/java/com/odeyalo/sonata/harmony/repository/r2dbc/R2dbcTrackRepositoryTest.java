@@ -155,6 +155,18 @@ public class R2dbcTrackRepositoryTest {
     }
 
     @Test
+    void shouldSaveArtists() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> actual.getArtists() != null)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldReturnAlbum() {
         var expected = generateTrackWithoutId();
 
@@ -258,6 +270,8 @@ public class R2dbcTrackRepositoryTest {
                 .discNumber(1)
                 .index(0)
                 .albumId(existingAlbum.getId())
+                .album(existingAlbum)
+                .artists(existingAlbum.getArtists())
                 .build();
     }
 
@@ -270,6 +284,8 @@ public class R2dbcTrackRepositoryTest {
                 .discNumber(1)
                 .index(1)
                 .albumId(existingAlbum.getId())
+                .album(existingAlbum)
+                .artists(existingAlbum.getArtists())
                 .build();
     }
 
