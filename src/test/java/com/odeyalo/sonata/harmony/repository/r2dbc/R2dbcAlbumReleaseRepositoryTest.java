@@ -5,7 +5,7 @@ import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
 import com.odeyalo.sonata.harmony.entity.ArtistEntity;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
-import com.odeyalo.sonata.harmony.repository.ArtistRepository;
+import com.odeyalo.sonata.harmony.repository.RemoveCapable;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumArtistsEnhancerAfterConvertCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumReleaseDateEnhancerAfterConvertCallback;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.AlbumReleaseArtistsAssociationAfterSaveCallback;
@@ -43,7 +43,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
     R2dbcAlbumReleaseRepository testable;
 
     @Autowired
-    ArtistRepository artistRepository;
+    RemoveCapable<ArtistEntity, Long> artistRemover;
 
     @Autowired
     R2dbcAlbumArtistsRepository albumArtistsRepository;
@@ -51,8 +51,8 @@ public class R2dbcAlbumReleaseRepositoryTest {
     @AfterEach
     void tearDown() {
         albumArtistsRepository.deleteAll()
-                .then(testable.deleteAll()
-                        .then(artistRepository.deleteAll()))
+                .then(testable.deleteAll())
+                .then(artistRemover.deleteAll())
                 .block();
     }
 
