@@ -14,7 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("tracks")
-public class TrackEntity {
+public class TrackEntity implements ArtistContainerHolder {
     @Id
     Long id;
     String name;
@@ -33,4 +33,6 @@ public class TrackEntity {
     Long albumId;
     @Transient
     AlbumReleaseEntity album;
+    @Transient
+    ArtistContainerEntity artists;
 }
