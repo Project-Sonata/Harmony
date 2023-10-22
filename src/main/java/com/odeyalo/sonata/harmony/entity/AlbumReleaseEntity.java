@@ -15,7 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("album_releases")
-public class AlbumReleaseEntity {
+public class AlbumReleaseEntity implements ArtistContainerHolder {
     @Id
     Long id;
     @Column("album_name")
@@ -35,7 +35,9 @@ public class AlbumReleaseEntity {
     // It can't be achieved using AfterConvertCallback invocation due to lack of Row data, e.g. the values from database cannot be accessed in callback
     // also, can't do this using Spring Converter<ReleaseDate, OutboundRow>
     @Column("release_date")
+    @EqualsAndHashCode.Exclude
     String releaseDateAsString;
     @Column("release_date_precision")
+    @EqualsAndHashCode.Exclude
     String releaseDatePrecision;
 }
