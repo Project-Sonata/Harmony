@@ -22,7 +22,7 @@ import static java.util.Collections.singletonList;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DelegatingFileUploaderTest {
     DelegatingFileUploader testable = new DelegatingFileUploader(
-            new MockFileUploaderDelegate()
+            new MockFileUploaderDelegate(FileUrl.urlOnly("https://cdn.sonata.com/uniqueid"))
     );
 
     @Test

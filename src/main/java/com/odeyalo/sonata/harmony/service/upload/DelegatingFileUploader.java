@@ -1,6 +1,8 @@
 package com.odeyalo.sonata.harmony.service.upload;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
@@ -17,9 +19,11 @@ import static com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.uplo
 /**
  * FileUploader impl that just upload the file using FileUploaderDelegate and just pushes events
  */
+@Component
 public class DelegatingFileUploader implements FileUploader {
     private final FileUploaderDelegate delegate;
 
+    @Autowired
     public DelegatingFileUploader(FileUploaderDelegate delegate) {
         this.delegate = delegate;
     }
@@ -40,7 +44,7 @@ public class DelegatingFileUploader implements FileUploader {
 
     @NotNull
     private Mono<FileUrl> uploadFileAndPublishEvent(@NotNull FileUploadTarget file,
-                                                   @NotNull Sinks.Many<FileUploadingStatus> eventPublisher) {
+                                                    @NotNull Sinks.Many<FileUploadingStatus> eventPublisher) {
         FileUploadingStatus uploadStartedEvent = started(UploadingStartedEvent.of(file.getId()));
 
         eventPublisher.tryEmitNext(uploadStartedEvent);
@@ -59,7 +63,7 @@ public class DelegatingFileUploader implements FileUploader {
 
     private static void publishUploadedEvent(@NotNull FileUploadTarget file,
                                              @NotNull Sinks.Many<FileUploadingStatus> eventPublisher,
-                                             @NotNull  FileUrl fileUrl) {
+                                             @NotNull FileUrl fileUrl) {
 
         FileUploadingStatus fileUploadedEvent = uploaded(UploadingFinishedEvent.of(file.getId(), fileUrl));
 
