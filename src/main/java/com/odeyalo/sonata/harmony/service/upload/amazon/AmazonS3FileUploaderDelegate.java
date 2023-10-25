@@ -1,5 +1,8 @@
-package com.odeyalo.sonata.harmony.service.upload;
+package com.odeyalo.sonata.harmony.service.upload.amazon;
 
+import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
+import com.odeyalo.sonata.harmony.service.upload.FileUploaderDelegate;
+import com.odeyalo.sonata.harmony.service.upload.FileUrl;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
