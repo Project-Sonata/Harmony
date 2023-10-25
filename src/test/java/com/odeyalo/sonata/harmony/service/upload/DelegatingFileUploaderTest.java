@@ -60,5 +60,4 @@ public class DelegatingFileUploaderTest {
                 .filePart(file)
                 .build();
     }
-
 }
