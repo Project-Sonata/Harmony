@@ -1,12 +1,8 @@
-package com.odeyalo.sonata.harmony.service;
+package com.odeyalo.sonata.harmony.service.upload;
 
-import com.odeyalo.sonata.harmony.service.upload.DelegatingFileUploader;
-import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
-import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.FileReceivedEvent;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.UploadingFinishedEvent;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.UploadingStartedEvent;
-import com.odeyalo.sonata.harmony.service.upload.MockFileUploaderDelegate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.core.io.ClassPathResource;
@@ -43,6 +39,7 @@ public class DelegatingFileUploaderTest {
                 .expectNextMatches(DelegatingFileUploaderTest::isUploaded)
                 .verifyComplete();
     }
+
 
     private static boolean isUploaded(FileUploadingStatus actual) {
         return actual.getType() == FileUploadingStatus.Type.UPLOADED
