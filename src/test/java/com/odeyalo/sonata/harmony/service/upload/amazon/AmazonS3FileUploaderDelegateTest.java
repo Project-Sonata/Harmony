@@ -1,9 +1,7 @@
-package com.odeyalo.sonata.harmony.service.upload;
+package com.odeyalo.sonata.harmony.service.upload.amazon;
 
-import com.odeyalo.sonata.harmony.service.upload.amazon.AmazonS3FileUploaderDelegate;
-import com.odeyalo.sonata.harmony.service.upload.amazon.AmazonS3FileUrlResolver;
-import com.odeyalo.sonata.harmony.service.upload.amazon.MockAmazonS3FileUploadingStrategy;
-import com.odeyalo.sonata.harmony.service.upload.amazon.PrefixedUrlAmazonS3FileUrlResolver;
+import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
+import com.odeyalo.sonata.harmony.service.upload.FileUrl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
