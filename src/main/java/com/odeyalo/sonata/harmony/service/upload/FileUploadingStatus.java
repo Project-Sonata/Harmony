@@ -65,14 +65,14 @@ public class FileUploadingStatus {
     @Value
     @EqualsAndHashCode(callSuper = true)
     public static class UploadingFinishedEvent extends Event {
-        String url;
+        FileUrl url;
 
-        protected UploadingFinishedEvent(String fileId, String url) {
+        protected UploadingFinishedEvent(String fileId, FileUrl url) {
             super(fileId);
             this.url = url;
         }
 
-        public static UploadingFinishedEvent of(String fileId, String url) {
+        public static UploadingFinishedEvent of(String fileId, FileUrl url) {
             return new UploadingFinishedEvent(fileId, url);
         }
     }
