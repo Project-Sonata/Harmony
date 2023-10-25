@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
+import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
 import com.odeyalo.sonata.harmony.entity.ArtistEntity;
 import com.odeyalo.sonata.harmony.entity.TrackArtistEntity;
 import com.odeyalo.sonata.harmony.entity.TrackEntity;
@@ -16,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static com.odeyalo.sonata.harmony.entity.ArtistContainerEntity.multiple;
 
 /**
  * AfterConvertCallback used to enhance the TrackEntity with the associated artists.
@@ -44,7 +44,7 @@ public class TrackArtistsEnhancerAfterConvertCallback implements AfterConvertCal
                 .flatMap(artistsId -> artistRepository.findAllById(artistsId).collectList());
 
         return artistsEntities
-                .doOnNext(artists -> entity.setArtists(multiple(artists)))
+                .doOnNext(artists -> entity.setArtists(ArtistContainerEntity.multiple(artists)))
                 .thenReturn(entity);
     }
 }
