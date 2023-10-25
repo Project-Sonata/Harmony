@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.service;
 
+import com.odeyalo.sonata.harmony.service.upload.DelegatingFileUploader;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.FileReceivedEvent;
@@ -9,7 +10,8 @@ import com.odeyalo.sonata.harmony.service.upload.MockFileUploaderDelegate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.buffer.*;
+import org.springframework.core.io.buffer.DefaultDataBuffer;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
@@ -20,7 +22,6 @@ import java.time.Duration;
 import static com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.received;
 import static com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus.started;
 import static java.util.Collections.singletonList;
-import static reactor.core.publisher.Mono.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DelegatingFileUploaderTest {
@@ -57,11 +58,10 @@ public class DelegatingFileUploaderTest {
 
         FilePartStub file = new FilePartStub(Flux.just(dataBuffer));
 
-        var fileUploadTarget = FileUploadTarget.builder()
+        return FileUploadTarget.builder()
                 .id("uniqueid")
                 .filePart(file)
                 .build();
-        return fileUploadTarget;
     }
 
 }

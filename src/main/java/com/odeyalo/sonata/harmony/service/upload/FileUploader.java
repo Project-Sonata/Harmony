@@ -1,7 +1,5 @@
-package com.odeyalo.sonata.harmony.service;
+package com.odeyalo.sonata.harmony.service.upload;
 
-import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
-import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus;
 import reactor.core.publisher.Flux;
 
 import java.util.List;

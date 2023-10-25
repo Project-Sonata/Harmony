@@ -1,9 +1,5 @@
-package com.odeyalo.sonata.harmony.service;
+package com.odeyalo.sonata.harmony.service.upload;
 
-import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
-import com.odeyalo.sonata.harmony.service.upload.FileUploaderDelegate;
-import com.odeyalo.sonata.harmony.service.upload.FileUploadingStatus;
-import com.odeyalo.sonata.harmony.service.upload.FileUrl;
 import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
