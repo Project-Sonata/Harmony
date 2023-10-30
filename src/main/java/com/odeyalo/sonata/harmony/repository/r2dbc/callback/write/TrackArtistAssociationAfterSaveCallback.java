@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.write;
 
+import com.odeyalo.sonata.harmony.entity.SimplifiedTrackEntity;
 import com.odeyalo.sonata.harmony.entity.TrackArtistEntity;
-import com.odeyalo.sonata.harmony.entity.TrackEntity;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcTrackArtistRepository;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
  * Associate the TrackEntity with the Artists using the conjunction table TrackArtistEntity
  */
 @Component
-public class TrackArtistAssociationAfterSaveCallback implements AfterSaveCallback<TrackEntity> {
+public class TrackArtistAssociationAfterSaveCallback implements AfterSaveCallback<SimplifiedTrackEntity> {
     private final R2dbcTrackArtistRepository trackArtistRepository;
 
     @Autowired
@@ -28,7 +28,7 @@ public class TrackArtistAssociationAfterSaveCallback implements AfterSaveCallbac
 
     @Override
     @NotNull
-    public Publisher<TrackEntity> onAfterSave(@NotNull TrackEntity track,
+    public Publisher<SimplifiedTrackEntity> onAfterSave(@NotNull SimplifiedTrackEntity track,
                                               @NotNull OutboundRow outboundRow,
                                               @NotNull SqlIdentifier table) {
 
