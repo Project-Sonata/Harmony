@@ -15,5 +15,5 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table("tracks")
 public class TrackEntity extends SimplifiedTrackEntity {
     @Transient
-    AlbumReleaseEntity album;
+    SimplifiedAlbumEntity album;
 }

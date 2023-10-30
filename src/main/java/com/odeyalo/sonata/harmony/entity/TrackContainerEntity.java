@@ -24,6 +24,10 @@ public class TrackContainerEntity implements Iterable<SimplifiedTrackEntity> {
         return multiple(Collections.singletonList(track));
     }
 
+    public static TrackContainerEntity wrap(SimplifiedTrackEntity... tracks) {
+        return wrap(List.of(tracks));
+    }
+
     public static TrackContainerEntity wrap(List<SimplifiedTrackEntity> tracks) {
         return multiple(tracks);
     }

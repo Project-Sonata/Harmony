@@ -1,8 +1,8 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.write;
 
 import com.odeyalo.sonata.harmony.entity.AlbumArtistEntity;
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.entity.SimplifiedAlbumEntity;
 import com.odeyalo.sonata.harmony.repository.ArtistRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumArtistsRepository;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import reactor.core.publisher.Mono;
 import static com.odeyalo.sonata.harmony.entity.AlbumArtistEntity.pairOf;
 
 @Component
-public class AlbumReleaseArtistsAssociationAfterSaveCallback implements AfterSaveCallback<AlbumReleaseEntity> {
+public class AlbumReleaseArtistsAssociationAfterSaveCallback implements AfterSaveCallback<SimplifiedAlbumEntity> {
     private final R2dbcAlbumArtistsRepository albumArtistsRepository;
     private final ArtistRepository artistRepository;
 
@@ -33,7 +33,7 @@ public class AlbumReleaseArtistsAssociationAfterSaveCallback implements AfterSav
 
     @Override
     @NotNull
-    public Publisher<AlbumReleaseEntity> onAfterSave(@NotNull AlbumReleaseEntity entity,
+    public Publisher<SimplifiedAlbumEntity> onAfterSave(@NotNull SimplifiedAlbumEntity entity,
                                                      @NotNull OutboundRow outboundRow,
                                                      @NotNull SqlIdentifier table) {
 

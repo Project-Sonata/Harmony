@@ -1,6 +1,6 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.write;
 
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import com.odeyalo.sonata.harmony.entity.SimplifiedAlbumEntity;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateEncoder;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public class ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback implements BeforeSaveCallback<AlbumReleaseEntity> {
+public class ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback implements BeforeSaveCallback<SimplifiedAlbumEntity> {
     private final ReleaseDateEncoder<String> stringReleaseDateEncoder;
 
     @Autowired
@@ -24,8 +24,8 @@ public class ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback implemen
 
     @Override
     @NotNull
-    public Publisher<AlbumReleaseEntity> onBeforeSave(
-            @NotNull AlbumReleaseEntity entity,
+    public Publisher<SimplifiedAlbumEntity> onBeforeSave(
+            @NotNull SimplifiedAlbumEntity entity,
             @NotNull OutboundRow row,
             @NotNull SqlIdentifier table) {
 
