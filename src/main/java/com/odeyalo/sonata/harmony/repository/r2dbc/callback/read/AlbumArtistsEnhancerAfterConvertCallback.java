@@ -1,9 +1,6 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
-import com.odeyalo.sonata.harmony.entity.AlbumArtistEntity;
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.entity.*;
 import com.odeyalo.sonata.harmony.repository.ArtistRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumArtistsRepository;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @Component
-public class AlbumArtistsEnhancerAfterConvertCallback implements AfterConvertCallback<AlbumReleaseEntity> {
+public class AlbumArtistsEnhancerAfterConvertCallback implements AfterConvertCallback<SimplifiedAlbumEntity> {
     private final R2dbcAlbumArtistsRepository albumArtistsRepository;
     private final ArtistRepository artistRepository;
 
@@ -32,7 +29,7 @@ public class AlbumArtistsEnhancerAfterConvertCallback implements AfterConvertCal
 
     @Override
     @NotNull
-    public Publisher<AlbumReleaseEntity> onAfterConvert(@NotNull AlbumReleaseEntity entity,
+    public Publisher<SimplifiedAlbumEntity> onAfterConvert(@NotNull SimplifiedAlbumEntity entity,
                                                         @NotNull SqlIdentifier table) {
 
         Flux<AlbumArtistEntity> albumArtists = albumArtistsRepository.findAllByAlbumId(entity.getId());

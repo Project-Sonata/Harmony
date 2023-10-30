@@ -1,9 +1,6 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
-import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistEntity;
-import com.odeyalo.sonata.harmony.entity.TrackArtistEntity;
-import com.odeyalo.sonata.harmony.entity.TrackEntity;
+import com.odeyalo.sonata.harmony.entity.*;
 import com.odeyalo.sonata.harmony.repository.ArtistRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcTrackArtistRepository;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +19,7 @@ import java.util.List;
  * AfterConvertCallback used to enhance the TrackEntity with the associated artists.
  */
 @Component
-public class TrackArtistsEnhancerAfterConvertCallback implements AfterConvertCallback<TrackEntity> {
+public class TrackArtistsEnhancerAfterConvertCallback implements AfterConvertCallback<SimplifiedTrackEntity> {
     private final ArtistRepository artistRepository;
     private final R2dbcTrackArtistRepository r2DbcTrackArtistRepository;
 
@@ -35,7 +32,7 @@ public class TrackArtistsEnhancerAfterConvertCallback implements AfterConvertCal
 
     @Override
     @NotNull
-    public Publisher<TrackEntity> onAfterConvert(@NotNull TrackEntity entity,
+    public Publisher<SimplifiedTrackEntity> onAfterConvert(@NotNull SimplifiedTrackEntity entity,
                                                  @NotNull SqlIdentifier table) {
 
         Mono<List<ArtistEntity>> artistsEntities = r2DbcTrackArtistRepository.findAllByTrackId(entity.getId())

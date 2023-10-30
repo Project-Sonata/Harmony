@@ -3,14 +3,8 @@ package testing.spring;
 import com.odeyalo.sonata.harmony.repository.ArtistRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcArtistRepository;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumArtistsEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumReleaseDateEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.TrackAlbumEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.TrackArtistsEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.AlbumReleaseArtistsAssociationAfterSaveCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.SaveArtistOnMissingBeforeSaveCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.TrackArtistAssociationAfterSaveCallback;
+import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.*;
+import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.*;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcArtistRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.FormattedString2ReleaseDateConverter;
@@ -30,7 +24,9 @@ import org.springframework.context.annotation.Import;
         TrackAlbumEnhancerAfterConvertCallback.class,
         TrackArtistsEnhancerAfterConvertCallback.class,
         TrackArtistAssociationAfterSaveCallback.class,
-        SaveArtistOnMissingBeforeSaveCallback.class
+        SaveArtistOnMissingBeforeSaveCallback.class,
+        SaveAlbumTracksAfterSaveCallback.class,
+        AlbumTracksEnhancerAfterConvertCallback.class
 })
 public class R2dbcEntityCallbackConfiguration {
 

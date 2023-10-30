@@ -1,6 +1,6 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import com.odeyalo.sonata.harmony.entity.SimplifiedAlbumEntity;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateDecoder;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateRowInfo;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 @Component
-public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConvertCallback<AlbumReleaseEntity> {
+public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConvertCallback<SimplifiedAlbumEntity> {
     private final ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder;
 
     public AlbumReleaseDateEnhancerAfterConvertCallback(ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder) {
@@ -21,8 +21,8 @@ public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConver
 
     @Override
     @NotNull
-    public Publisher<AlbumReleaseEntity> onAfterConvert(@NotNull AlbumReleaseEntity entity,
-                                                        @NotNull SqlIdentifier table) {
+    public Publisher<SimplifiedAlbumEntity> onAfterConvert(@NotNull SimplifiedAlbumEntity entity,
+                                                           @NotNull SqlIdentifier table) {
 
         String releaseDate = entity.getReleaseDateAsString();
         ReleaseDate.Precision precision = toPrecision(entity);
@@ -35,7 +35,7 @@ public class AlbumReleaseDateEnhancerAfterConvertCallback implements AfterConver
     }
 
     @NotNull
-    private static ReleaseDate.Precision toPrecision(@NotNull AlbumReleaseEntity entity) {
+    private static ReleaseDate.Precision toPrecision(@NotNull SimplifiedAlbumEntity entity) {
         return ReleaseDate.Precision.valueOf(entity.getReleaseDatePrecision());
     }
 }

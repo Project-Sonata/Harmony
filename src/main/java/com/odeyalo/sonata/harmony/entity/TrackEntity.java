@@ -1,38 +1,19 @@
 package com.odeyalo.sonata.harmony.entity;
 
 import lombok.*;
-import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
-import org.springframework.data.annotation.Id;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("tracks")
-public class TrackEntity implements ArtistContainerHolder {
-    @Id
-    Long id;
-    String name;
-    @Column("duration_ms")
-    Long durationMs;
-    @Column("is_explicit")
-    boolean explicit;
-    @Column("has_lyrics")
-    @Accessors(fluent = true)
-    boolean hasLyrics;
-    @Column("disc_number")
-    Integer discNumber;
-    @Column("index")
-    Integer index;
-    @Column("album_id")
-    Long albumId;
+public class TrackEntity extends SimplifiedTrackEntity {
     @Transient
-    AlbumReleaseEntity album;
-    @Transient
-    ArtistContainerEntity artists;
+    SimplifiedAlbumEntity album;
 }

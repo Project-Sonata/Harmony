@@ -1,12 +1,15 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc;
 
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
 import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.entity.SimplifiedAlbumEntity;
 import com.odeyalo.sonata.harmony.entity.TrackEntity;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
-import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
+import com.odeyalo.sonata.harmony.repository.SimplifiedAlbumRepository;
+import com.odeyalo.sonata.harmony.repository.SimplifiedTrackRepository;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcSimplifiedAlbumRepositoryDelegate;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcSimplifiedTrackRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcTrackRepositoryDelegate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,13 +42,13 @@ public class R2dbcTrackRepositoryTest {
     R2dbcTrackRepository testable;
 
     @Autowired
-    R2dbcAlbumReleaseRepositoryDelegate albumReleaseRepository;
+    R2dbcSimplifiedAlbumRepositoryDelegate albumReleaseRepository;
 
-    private static AlbumReleaseEntity existingAlbum;
+    private static SimplifiedAlbumEntity existingAlbum;
 
     @BeforeEach
     void setUp() {
-        AlbumReleaseEntity album = AlbumReleaseEntity.builder()
+        SimplifiedAlbumEntity album = SimplifiedAlbumEntity.builder()
                 .albumName("Berry is on top")
                 .totalTracksCount(2)
                 .releaseDate(ReleaseDate.onlyYear(2023))
@@ -179,6 +182,25 @@ public class R2dbcTrackRepositoryTest {
     }
 
     @Test
+    void shouldFindAllByAlbumId() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findAllByAlbumId(existingAlbum.getId())
+                .as(StepVerifier::create)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyFluxIfAlbumIdNotExist() {
+        testable.findAllByAlbumId(-1L)
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDeleteAll() {
         var expected = generateTrackWithoutId();
 
@@ -295,6 +317,16 @@ public class R2dbcTrackRepositoryTest {
         @Bean
         public R2dbcTrackRepository r2dbcTrackRepository(R2dbcTrackRepositoryDelegate delegate) {
             return new R2dbcTrackRepository(delegate);
+        }
+
+        @Bean
+        public SimplifiedTrackRepository simplifiedTrackRepository(R2dbcSimplifiedTrackRepositoryDelegate delegate) {
+            return new R2dbcSimplifiedTrackRepository(delegate);
+        }
+
+        @Bean
+        public SimplifiedAlbumRepository simplifiedAlbumRepository(R2dbcSimplifiedAlbumRepositoryDelegate delegate) {
+            return new R2dbcSimplifiedAlbumRepository(delegate);
         }
 
     }

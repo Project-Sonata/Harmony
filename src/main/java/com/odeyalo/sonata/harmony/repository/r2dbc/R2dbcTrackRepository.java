@@ -63,4 +63,9 @@ public class R2dbcTrackRepository implements TrackRepository {
     public Mono<Void> deleteAll() {
         return delegate.deleteAll();
     }
+
+    @Override
+    public Flux<TrackEntity> findAllByAlbumId(Long id) {
+        return delegate.findAllByAlbumId(id);
+    }
 }

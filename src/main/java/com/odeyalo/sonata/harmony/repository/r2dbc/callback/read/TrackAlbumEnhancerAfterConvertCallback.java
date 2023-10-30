@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc.callback.read;
 
 import com.odeyalo.sonata.harmony.entity.TrackEntity;
-import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
+import com.odeyalo.sonata.harmony.repository.SimplifiedAlbumRepository;
 import org.jetbrains.annotations.NotNull;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TrackAlbumEnhancerAfterConvertCallback implements AfterConvertCallback<TrackEntity> {
-    private final AlbumReleaseRepository albumReleaseRepository;
+    private final SimplifiedAlbumRepository albumRepository;
 
     @Autowired
-    public TrackAlbumEnhancerAfterConvertCallback(@Lazy AlbumReleaseRepository albumReleaseRepository) {
-        this.albumReleaseRepository = albumReleaseRepository;
+    public TrackAlbumEnhancerAfterConvertCallback(@Lazy SimplifiedAlbumRepository albumRepository) {
+        this.albumRepository = albumRepository;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class TrackAlbumEnhancerAfterConvertCallback implements AfterConvertCallb
     public Publisher<TrackEntity> onAfterConvert(@NotNull TrackEntity entity,
                                                  @NotNull SqlIdentifier table) {
 
-        return albumReleaseRepository.findById(entity.getAlbumId())
+        return albumRepository.findById(entity.getAlbumId())
                 .doOnNext(entity::setAlbum)
                 .thenReturn(entity);
     }
