@@ -1,20 +1,11 @@
 package com.odeyalo.sonata.harmony.repository.r2dbc;
 
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.entity.*;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.repository.RemoveCapable;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumArtistsEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.AlbumReleaseDateEnhancerAfterConvertCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.AlbumReleaseArtistsAssociationAfterSaveCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback;
-import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
-import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.FormattedString2ReleaseDateConverter;
-import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateDecoder;
-import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateEncoder;
-import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateRowInfo;
+import com.odeyalo.sonata.harmony.repository.SimplifiedTrackRepository;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcSimplifiedTrackRepositoryDelegate;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
+import testing.spring.R2dbcEntityCallbackConfiguration;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +29,10 @@ import static com.odeyalo.sonata.harmony.entity.ArtistContainerEntity.solo;
 @DataR2dbcTest
 @TestInstance(Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
+@Import(value = {
+        R2dbcAlbumReleaseRepositoryTest.Configuration.class,
+        R2dbcEntityCallbackConfiguration.class
+})
 public class R2dbcAlbumReleaseRepositoryTest {
 
     @Autowired
@@ -138,11 +134,35 @@ public class R2dbcAlbumReleaseRepositoryTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldSaveTracksForTheAlbum() {
+        var expected = createValidAlbumWithEmptyId();
+
+        insertReleases(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getTracks(), actual.getTracks()))
+                .verifyComplete();
+    }
+
     private static AlbumReleaseEntity createValidAlbumWithEmptyId() {
         ArtistContainerEntity artists = solo(ArtistEntity.builder()
                 .sonataId("something")
                 .name("corn wave")
                 .build());
+
+        SimplifiedTrackEntity track = SimplifiedTrackEntity.builder()
+                .name("domestic wolves")
+                .artists(artists)
+                .hasLyrics(true)
+                .explicit(false)
+                .index(0)
+                .discNumber(1)
+                .durationMs(7829L)
+                .build();
+
+        TrackContainerEntity trackContainer = TrackContainerEntity.single(track);
 
         return builder().albumName("dudeness")
                 .albumType(AlbumType.SINGLE)
@@ -150,6 +170,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
                 .totalTracksCount(2)
                 .releaseDate(ReleaseDate.onlyYear(2023))
                 .artists(artists)
+                .tracks(trackContainer)
                 .build();
     }
 
@@ -161,28 +182,12 @@ public class R2dbcAlbumReleaseRepositoryTest {
     }
 
     @TestConfiguration
-    @Import(value = {
-            ReleaseDateAssociationReleaseAlbumEntityBeforeSaveCallback.class,
-            AlbumReleaseDateEnhancerAfterConvertCallback.class,
-            AlbumArtistsEnhancerAfterConvertCallback.class,
-            AlbumReleaseArtistsAssociationAfterSaveCallback.class,
-            R2dbcArtistRepository.class
-    })
-    public static class Configuration {
+    static class Configuration {
 
         @Bean
-        public ReleaseDateEncoder<String> releaseDateEncoder() {
-            return new FormattedString2ReleaseDateConverter();
+        public SimplifiedTrackRepository r2dbcTrackRepository(R2dbcSimplifiedTrackRepositoryDelegate delegate) {
+            return new R2dbcSimplifiedTrackRepository(delegate);
         }
 
-        @Bean
-        public ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder() {
-            return new FormattedString2ReleaseDateConverter();
-        }
-
-        @Bean
-        public R2dbcAlbumReleaseRepository r2dbcAlbumReleaseRepository(R2dbcAlbumReleaseRepositoryDelegate delegate) {
-            return new R2dbcAlbumReleaseRepository(delegate);
-        }
     }
 }
