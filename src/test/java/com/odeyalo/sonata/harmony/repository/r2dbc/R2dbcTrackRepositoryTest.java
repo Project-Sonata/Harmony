@@ -179,6 +179,25 @@ public class R2dbcTrackRepositoryTest {
     }
 
     @Test
+    void shouldFindAllByAlbumId() {
+        var expected = generateTrackWithoutId();
+
+        insertTracks(expected);
+
+        testable.findAllByAlbumId(existingAlbum.getId())
+                .as(StepVerifier::create)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnEmptyFluxIfAlbumIdNotExist() {
+        testable.findAllByAlbumId(-1L)
+                .as(StepVerifier::create)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldDeleteAll() {
         var expected = generateTrackWithoutId();
 
