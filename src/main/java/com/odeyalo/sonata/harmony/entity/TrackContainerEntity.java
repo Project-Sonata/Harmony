@@ -14,17 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TrackContainerEntity implements Iterable<TrackEntity> {
+public class TrackContainerEntity implements Iterable<SimplifiedTrackEntity> {
     @Getter(value = AccessLevel.NONE)
     @Singular
-    List<TrackEntity> items;
+    List<SimplifiedTrackEntity> items;
 
-    public static TrackContainerEntity single(TrackEntity track) {
+    public static TrackContainerEntity single(SimplifiedTrackEntity track) {
         Assert.notNull(track, "Track should not be null!");
         return multiple(Collections.singletonList(track));
     }
 
-    public static TrackContainerEntity wrap(List<TrackEntity> tracks) {
+    public static TrackContainerEntity wrap(List<SimplifiedTrackEntity> tracks) {
         return multiple(tracks);
     }
 
@@ -40,13 +40,13 @@ public class TrackContainerEntity implements Iterable<TrackEntity> {
         return items.contains(o);
     }
 
-    public TrackEntity get(int index) {
+    public SimplifiedTrackEntity get(int index) {
         return items.get(index);
     }
 
     @NotNull
     @Override
-    public Iterator<TrackEntity> iterator() {
+    public Iterator<SimplifiedTrackEntity> iterator() {
         return items.iterator();
     }
 }
