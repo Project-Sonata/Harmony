@@ -21,7 +21,7 @@ public class ImageFilePartBucketNameResolverSupport implements FilePartBucketNam
     @Override
     @NotNull
     public Mono<BucketNameSupplier> resolveBucketName(@NotNull FilePart target) {
-        if (ImageUtils.isImageFile(target.filename())) {
+        if ( ImageUtils.isImageFile(target.filename()) ) {
             return Mono.just(imageBucketSupplier);
         }
         return Mono.empty();
