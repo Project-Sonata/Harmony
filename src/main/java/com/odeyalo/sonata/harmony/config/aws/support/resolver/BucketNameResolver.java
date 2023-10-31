@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.config.aws.support.resolver;
 
 import com.odeyalo.sonata.harmony.config.aws.support.BucketNameSupplier;
+import org.jetbrains.annotations.NotNull;
 import reactor.core.publisher.Mono;
 
 /**
@@ -13,6 +14,7 @@ public interface BucketNameResolver<T> {
      * @param target - target to resolve bucket name, in most cases this is file.
      * @return - mono with supplier implementation or empty mono if T does not supported by this resolver
      */
-    Mono<BucketNameSupplier> resolveBucketName(T target);
+    @NotNull
+    Mono<BucketNameSupplier> resolveBucketName(@NotNull T target);
 
 }
