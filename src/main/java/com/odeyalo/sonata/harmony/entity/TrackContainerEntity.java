@@ -32,6 +32,10 @@ public class TrackContainerEntity implements Iterable<SimplifiedTrackEntity> {
         return multiple(tracks);
     }
 
+    public static TrackContainerEntity empty() {
+        return builder().build();
+    }
+
     public int size() {
         return items.size();
     }

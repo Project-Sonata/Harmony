@@ -24,6 +24,10 @@ public class ArtistContainerEntity implements Iterable<ArtistEntity> {
         return multiple(List.of(artist));
     }
 
+    public static ArtistContainerEntity empty() {
+        return builder().build();
+    }
+
     public int size() {
         return getArtists().size();
     }
