@@ -12,6 +12,11 @@ import org.springframework.context.annotation.Configuration;
 public class BucketNameSuppliersConfiguration {
 
     @Bean
+    public BucketNameSupplier defaultBucketNameSupplier(AwsProperties awsProperties) {
+        return new StaticBucketNameSupplier(awsProperties.getBuckets().getFallbackBucketName());
+    }
+
+    @Bean
     public ImageBucketNameSupplier imageBucketNameSupplier(AwsProperties properties) {
         return new StaticImageBucketNameSupplier(properties.getBuckets().getImageBucketName());
     }
