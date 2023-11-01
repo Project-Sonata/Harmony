@@ -5,17 +5,17 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ImageUtilsTest {
+class FilenameUtilsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"miku.png", "miku.jpeg", "miku,jpg", "miku.gif", "miku.webp"})
     void shouldReturnTrueForImageFormats(String filename) {
-        assertThat(ImageUtils.isImageFile(filename)).isTrue();
+        assertThat(FilenameUtils.isImageFile(filename)).isTrue();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"miku.mp3", "miku.pdf", "miku,txt", "miku.mp4", "miku.apk"})
     void shouldReturnFalseForNonImageFormats(String filename) {
-        assertThat(ImageUtils.isImageFile(filename)).isFalse();
+        assertThat(FilenameUtils.isImageFile(filename)).isFalse();
     }
 }

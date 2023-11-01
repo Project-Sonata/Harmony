@@ -2,7 +2,7 @@ package com.odeyalo.sonata.harmony.config.aws.support.resolver;
 
 import com.odeyalo.sonata.harmony.config.aws.support.BucketNameSupplier;
 import com.odeyalo.sonata.harmony.config.aws.support.ImageBucketNameSupplier;
-import com.odeyalo.sonata.harmony.support.utils.ImageUtils;
+import com.odeyalo.sonata.harmony.support.utils.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.FilePart;
@@ -21,7 +21,7 @@ public class ImageFilePartBucketNameResolverSupport implements FilePartBucketNam
     @Override
     @NotNull
     public Mono<BucketNameSupplier> resolveBucketName(@NotNull FilePart target) {
-        if ( ImageUtils.isImageFile(target.filename()) ) {
+        if ( FilenameUtils.isImageFile(target.filename()) ) {
             return Mono.just(imageBucketSupplier);
         }
         return Mono.empty();
