@@ -3,6 +3,7 @@ package com.odeyalo.sonata.harmony.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,6 +14,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("album_cover_images")
 public class AlbumCoverImageEntity {
+    @Id
     Long id;
     @NotNull
     @Column("url")
