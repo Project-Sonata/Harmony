@@ -8,6 +8,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface R2dbcAlbumCoverImageRepositoryDelegate extends R2dbcRepository<AlbumCoverImageEntity, Long> {
 
-    Mono<AlbumCoverImageEntity> findByAlbumId(String albumId);
+    Mono<AlbumCoverImageEntity> findByAlbumId(Long albumId);
 
 }

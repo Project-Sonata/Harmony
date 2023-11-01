@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface AlbumCoverImageRepository extends BasicRepository<AlbumCoverImageEntity, Long> {
 
-    Mono<AlbumCoverImageEntity> findByAlbumId(String albumId);
+    Mono<AlbumCoverImageEntity> findByAlbumId(Long albumId);
 
 }
