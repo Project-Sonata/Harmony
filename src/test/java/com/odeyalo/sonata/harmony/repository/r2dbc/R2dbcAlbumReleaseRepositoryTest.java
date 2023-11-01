@@ -111,6 +111,18 @@ public class R2dbcAlbumReleaseRepositoryTest {
     }
 
     @Test
+    void shouldSaveAlbumCoverImages() {
+        var expected = createValidAlbumWithEmptyId();
+
+        insertReleases(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(expected.getImages(), actual.getImages()))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldReturnReleaseDate() {
         var expected = createValidAlbumWithEmptyId();
 
