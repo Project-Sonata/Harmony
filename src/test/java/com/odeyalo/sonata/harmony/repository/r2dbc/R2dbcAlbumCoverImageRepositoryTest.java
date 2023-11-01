@@ -69,7 +69,7 @@ class R2dbcAlbumCoverImageRepositoryTest {
 
     @Test
     void shouldReturnEmptyMonoIfImageNotExistByAlbumId() {
-        testable.findByAlbumId(-1L)
+        testable.findAllByAlbumId(-1L)
                 .as(StepVerifier::create)
                 .verifyComplete();
     }
@@ -80,7 +80,7 @@ class R2dbcAlbumCoverImageRepositoryTest {
 
         insertImageEntities(expected);
 
-        testable.findByAlbumId(expected.getAlbumId())
+        testable.findAllByAlbumId(expected.getAlbumId())
                 .as(StepVerifier::create)
                 .expectNext(expected)
                 .verifyComplete();

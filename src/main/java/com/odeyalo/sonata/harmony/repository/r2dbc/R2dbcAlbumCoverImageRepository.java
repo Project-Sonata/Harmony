@@ -20,8 +20,8 @@ public class R2dbcAlbumCoverImageRepository implements AlbumCoverImageRepository
     }
 
     @Override
-    public Mono<AlbumCoverImageEntity> findByAlbumId(Long albumId) {
-        return delegate.findByAlbumId(albumId);
+    public Flux<AlbumCoverImageEntity> findAllByAlbumId(Long albumId) {
+        return delegate.findAllByAlbumId(albumId);
     }
 
     @Override
