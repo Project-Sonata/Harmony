@@ -39,6 +39,16 @@ class ChainedBucketNameResolverTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnImageBucketNameForImageFile() throws IOException {
+        var musicFilePart = prepareImageFile();
+
+        resolvers.resolveBucketName(musicFilePart)
+                .as(StepVerifier::create)
+                .expectNext(IMAGE_BUCKET_NAME_SUPPLIER)
+                .verifyComplete();
+    }
+
     @NotNull
     private static FilePartStub prepareImageFile() throws IOException {
         var content = new ClassPathResource("./img/album-cover.png");
