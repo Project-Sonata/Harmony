@@ -42,11 +42,15 @@ public class R2dbcAlbumReleaseRepositoryTest {
     RemoveCapable<ArtistEntity, Long> artistRemover;
 
     @Autowired
+    RemoveCapable<AlbumCoverImageEntity, Long> coverImageRemover;
+
+    @Autowired
     R2dbcAlbumArtistsRepository albumArtistsRepository;
 
     @AfterEach
     void tearDown() {
         albumArtistsRepository.deleteAll()
+                .then(coverImageRemover.deleteAll())
                 .then(testable.deleteAll())
                 .then(artistRemover.deleteAll())
                 .block();
@@ -176,6 +180,12 @@ public class R2dbcAlbumReleaseRepositoryTest {
 
         TrackContainerEntity trackContainer = TrackContainerEntity.single(track);
 
+        AlbumCoverImageEntity image = AlbumCoverImageEntity.builder()
+                .width(300)
+                .height(300)
+                .url("https://cdn.sonata.com/i/ilovemiku")
+                .build();
+
         return builder().albumName("dudeness")
                 .albumType(AlbumType.SINGLE)
                 .durationMs(1000L)
@@ -183,6 +193,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
                 .releaseDate(ReleaseDate.onlyYear(2023))
                 .artists(artists)
                 .tracks(trackContainer)
+                .images(AlbumCoverImageContainerEntity.single(image))
                 .build();
     }
 
