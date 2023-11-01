@@ -1,7 +1,5 @@
 package com.odeyalo.sonata.harmony.config.aws;
 
-import com.odeyalo.sonata.harmony.config.aws.support.BasicBucketNameSupplier;
-import com.odeyalo.sonata.harmony.config.aws.support.BucketNameSupplier;
 import com.odeyalo.sonata.harmony.service.upload.amazon.AmazonS3FileUrlResolver;
 import com.odeyalo.sonata.harmony.service.upload.amazon.PrefixedUrlAmazonS3FileUrlResolver;
 import com.odeyalo.sonata.harmony.support.properties.AwsProperties;
@@ -20,11 +18,6 @@ import java.time.Duration;
 
 @Configuration
 public class AwsAsyncConfiguration {
-
-    @Bean
-    public BucketNameSupplier bucketNameSupplier(AwsProperties properties) {
-        return new BasicBucketNameSupplier(properties.getBucketName());
-    }
 
     @Bean
     public AwsCredentialsProvider awsCredentials(AwsProperties awsProperties) {
