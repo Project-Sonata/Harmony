@@ -10,6 +10,19 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+/**
+ * BucketNameResolver that uses a list of {@link BucketNameResolverSupport} with type T(same as provided in generics).
+ * <p>
+ * The implementation is designed for easy adding a bucket names and resolving them.
+ * Every BucketNameResolverSupport uses a type T to determine if resolver can resolve the bucket name.
+ * <p>
+ * First NON-EMPTY result of BucketNameResolverSupport will be returned.
+ * If all BucketNameResolverSupport have been invoked and nothing was found, then
+ * fallback BucketNameSupplier will be used.
+ * <p>
+ * Implementation does not return null values or empty Mono.
+ * @param <T> - type that used for bucket name resolving
+ */
 @Component
 public class ChainedBucketNameResolver<T> implements BucketNameResolver<T> {
     private final List<BucketNameResolverSupport<T>> resolvers;
