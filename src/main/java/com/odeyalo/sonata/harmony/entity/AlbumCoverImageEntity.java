@@ -19,13 +19,10 @@ public class AlbumCoverImageEntity {
     @NotNull
     @Column("url")
     String url;
-    @NotNull
     @Column("width")
     Integer width;
-    @NotNull
     @Column("height")
     Integer height;
-    @NotNull
     @Column("album_id")
     Long albumId;
 }
