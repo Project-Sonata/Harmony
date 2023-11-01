@@ -11,6 +11,12 @@ class FilenameUtilsTest {
 
     // Image file types tests
 
+    @Test
+    void shouldThrowExceptionIfNullProvidedForIsImageFileMethod() {
+        assertThatThrownBy(() -> FilenameUtils.isImageFile(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"miku.png", "miku.jpeg", "miku,jpg", "miku.gif", "miku.webp"})
     void shouldReturnTrueForImageFormats(String filename) {
@@ -26,7 +32,7 @@ class FilenameUtilsTest {
     // Music file types tests
 
     @Test
-    void shouldThrowExceptionIfNullIsProvided() {
+    void shouldThrowExceptionIfNullIsProvidedForIsMusicFileMethod() {
         assertThatThrownBy(() -> FilenameUtils.isMusicFile(null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
