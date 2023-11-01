@@ -24,5 +24,6 @@ public class AwsProperties {
     public static class Buckets {
         String imageBucketName;
         String musicBucketName;
+        String fallbackBucketName;
     }
 }
