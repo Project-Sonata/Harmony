@@ -9,6 +9,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * BucketNameResolver that uses a list of {@link BucketNameResolverSupport} with type T(same as provided in generics).
@@ -21,6 +22,7 @@ import java.util.List;
  * fallback BucketNameSupplier will be used.
  * <p>
  * Implementation does not return null values or empty Mono.
+ *
  * @param <T> - type that used for bucket name resolving
  */
 @Component
@@ -31,8 +33,8 @@ public class ChainedBucketNameResolver<T> implements BucketNameResolver<T> {
     @Autowired
     public ChainedBucketNameResolver(List<BucketNameResolverSupport<T>> resolvers,
                                      @Qualifier("defaultBucketNameSupplier") BucketNameSupplier defaultBucketNameSupplier) {
-        this.resolvers = resolvers;
-        this.defaultBucketNameSupplier = defaultBucketNameSupplier;
+        this.resolvers = Objects.requireNonNull(resolvers, "Resolvers must be not null. Empty list can be used");
+        this.defaultBucketNameSupplier = Objects.requireNonNull(defaultBucketNameSupplier, "Default BucketNameSupplier must be set!");
     }
 
     @Override
