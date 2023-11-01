@@ -11,12 +11,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AwsProperties {
     Credentials credentials;
-    String bucketName;
+    Buckets buckets;
     String urlPrefix;
 
     @Data
     public static class Credentials {
         String key;
         String secretKey;
+    }
+
+    @Data
+    public static class Buckets {
+        String imageBucketName;
+        String musicBucketName;
+        String fallbackBucketName;
     }
 }

@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Immutable container for artists.
  */
@@ -22,6 +24,10 @@ public class ArtistContainerEntity implements Iterable<ArtistEntity> {
 
     public static ArtistContainerEntity solo(@NotNull ArtistEntity artist) {
         return multiple(List.of(artist));
+    }
+
+    public static ArtistContainerEntity empty() {
+        return builder().artists(emptyList()).build();
     }
 
     public int size() {

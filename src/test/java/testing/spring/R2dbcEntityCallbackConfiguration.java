@@ -1,16 +1,20 @@
 package testing.spring;
 
+import com.odeyalo.sonata.harmony.repository.AlbumCoverImageRepository;
 import com.odeyalo.sonata.harmony.repository.ArtistRepository;
+import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumCoverImageRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.R2dbcArtistRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.read.*;
 import com.odeyalo.sonata.harmony.repository.r2dbc.callback.write.*;
+import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumCoverImageRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcArtistRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.FormattedString2ReleaseDateConverter;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateDecoder;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateEncoder;
 import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.ReleaseDateRowInfo;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -26,7 +30,9 @@ import org.springframework.context.annotation.Import;
         TrackArtistAssociationAfterSaveCallback.class,
         SaveArtistOnMissingBeforeSaveCallback.class,
         SaveAlbumTracksAfterSaveCallback.class,
-        AlbumTracksEnhancerAfterConvertCallback.class
+        AlbumTracksEnhancerAfterConvertCallback.class,
+        SaveAlbumCoverImagesAfterSaveCallback.class,
+        AlbumCoverImagesEnhancerAfterConvertCallback.class
 })
 public class R2dbcEntityCallbackConfiguration {
 
@@ -38,6 +44,12 @@ public class R2dbcEntityCallbackConfiguration {
     @Bean
     public ReleaseDateDecoder<ReleaseDateRowInfo> releaseDateDecoder() {
         return new FormattedString2ReleaseDateConverter();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AlbumCoverImageRepository albumCoverImageRepository(R2dbcAlbumCoverImageRepositoryDelegate delegate) {
+        return new R2dbcAlbumCoverImageRepository(delegate);
     }
 
     @Bean

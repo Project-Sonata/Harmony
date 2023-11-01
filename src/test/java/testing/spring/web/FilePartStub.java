@@ -14,6 +14,8 @@ import java.nio.file.Path;
 public final class FilePartStub implements FilePart {
     private final Flux<DataBuffer> content;
     private long length;
+    private String filename = "miku.png";
+    private String name = "image";
 
     public FilePartStub(Flux<DataBuffer> content, long length) {
         this.content = content;
@@ -24,10 +26,23 @@ public final class FilePartStub implements FilePart {
         this.content = content;
     }
 
+    public FilePartStub(Flux<DataBuffer> content, long length, String filename) {
+        this.content = content;
+        this.length = length;
+        this.filename = filename;
+    }
+
+    public FilePartStub(Flux<DataBuffer> content, long length, String filename, String name) {
+        this.content = content;
+        this.length = length;
+        this.filename = filename;
+        this.name = name;
+    }
+
     @Override
     @NotNull
     public String filename() {
-        return "miku.png";
+        return filename;
     }
 
     @Override
@@ -39,7 +54,7 @@ public final class FilePartStub implements FilePart {
     @Override
     @NotNull
     public String name() {
-        return "image";
+        return name;
     }
 
     @Override
