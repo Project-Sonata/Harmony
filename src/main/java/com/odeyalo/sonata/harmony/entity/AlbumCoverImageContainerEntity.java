@@ -28,6 +28,10 @@ public class AlbumCoverImageContainerEntity implements Iterable<AlbumCoverImageE
         return builder().item(item).build();
     }
 
+    public static AlbumCoverImageContainerEntity empty() {
+        return builder().build();
+    }
+
     public int size() {
         return getItems().size();
     }
