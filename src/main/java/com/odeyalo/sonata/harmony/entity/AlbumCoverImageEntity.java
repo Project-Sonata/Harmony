@@ -13,6 +13,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table("album_cover_images")
 public class AlbumCoverImageEntity {
+    Long id;
     @NotNull
     @Column("url")
     String url;
