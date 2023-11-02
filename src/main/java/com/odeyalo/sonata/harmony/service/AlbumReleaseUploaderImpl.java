@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.service;
 
 import com.odeyalo.sonata.harmony.model.*;
+import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +12,12 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
+    private final AlbumReleaseRepository albumRepository;
+
+    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository) {
+
+        this.albumRepository = albumRepository;
+    }
 
     @Override
     @NotNull
@@ -22,7 +29,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
         List<Track> convertedTracks = info.getTracks().stream().map(AlbumReleaseUploaderImpl::convertToTrack).toList();
 
         return Mono.just(AlbumRelease.builder()
-                .id("hello")
+                .id(1L)
                 .name(info.getAlbumName())
                 .totalTracksCount(info.getTotalTracksCount())
                 .albumType(info.getAlbumType())

@@ -1,10 +1,13 @@
 package com.odeyalo.sonata.harmony.service;
 
 import com.odeyalo.sonata.harmony.model.*;
+import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
+import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.codec.multipart.FilePart;
@@ -22,9 +25,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumReleaseUploaderImplTest {
 
-    AlbumReleaseUploaderImpl testable = new AlbumReleaseUploaderImpl();
 
     static final String SAVED_IMAGE_URL = "https://cdn.sonata.com/i/image";
+
+    AlbumReleaseRepository albumRepository = new InMemoryAlbumReleaseRepository();
+
+    AlbumReleaseUploaderImpl testable;
+
+    @BeforeEach
+    void setUp() {
+
+        testable = new AlbumReleaseUploaderImpl(albumRepository);
+
+    }
 
     @Test
     void shouldReturnSavedAlbum() {
@@ -37,7 +50,6 @@ public class AlbumReleaseUploaderImplTest {
                 .expectNextCount(1)
                 .verifyComplete();
     }
-
 
     @Test
     void shouldReturnIdForAlbumRelease() {
@@ -122,6 +134,17 @@ public class AlbumReleaseUploaderImplTest {
                 .as(StepVerifier::create)
                 .expectNextMatches(actual -> Objects.equals(actual.getImages().get(0).getUrl(), SAVED_IMAGE_URL))
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldSaveAlbumRelease() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> trackFiles = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        AlbumRelease release = requireNonNull(testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover).block());
+
+        albumRepository.findById(release.getId());
     }
 
     private static void assertTrack(TrackContainer tracks, TrackUploadTarget track) {

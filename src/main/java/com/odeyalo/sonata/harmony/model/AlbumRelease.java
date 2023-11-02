@@ -8,7 +8,7 @@ import lombok.Value;
 @AllArgsConstructor(staticName = "of")
 @Builder
 public class AlbumRelease {
-    String id;
+    Long id;
     String name;
     Integer totalTracksCount;
     AlbumType albumType;
