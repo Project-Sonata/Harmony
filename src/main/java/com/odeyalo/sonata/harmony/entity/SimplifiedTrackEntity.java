@@ -33,6 +33,8 @@ public class SimplifiedTrackEntity implements ArtistContainerHolder {
     Integer discNumber;
     @Column("index")
     Integer index;
+    @Column("track_url")
+    String trackUrl;
     @Column("album_id")
     Long albumId;
     @Transient
