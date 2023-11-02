@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.service.album;
 
 import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.model.ArtistContainer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -12,4 +13,5 @@ public class UploadAlbumReleaseInfo {
     String albumName;
     Integer totalTracksCount;
     AlbumType albumType;
+    ArtistContainer artists;
 }

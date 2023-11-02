@@ -52,7 +52,7 @@ public class AlbumReleaseUploaderImplTest {
 
         testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
                 .as(StepVerifier::create)
-                .expectNextMatches(actual ->  Objects.equals(albumReleaseInfo.getTotalTracksCount(), actual.getTotalTracksCount()))
+                .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getTotalTracksCount(), actual.getTotalTracksCount()))
                 .verifyComplete();
     }
 
@@ -65,6 +65,18 @@ public class AlbumReleaseUploaderImplTest {
         testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
                 .as(StepVerifier::create)
                 .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getAlbumType(), actual.getAlbumType()))
+                .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnArtists() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getArtists(), actual.getArtists()))
                 .verifyComplete();
     }
 

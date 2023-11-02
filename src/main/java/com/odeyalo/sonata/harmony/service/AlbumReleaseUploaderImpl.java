@@ -20,6 +20,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                 .name(info.getAlbumName())
                 .totalTracksCount(info.getTotalTracksCount())
                 .albumType(info.getAlbumType())
+                .artists(info.getArtists())
                 .build());
     }
 }
