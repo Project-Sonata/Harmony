@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
 import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.RECEIVED;
+import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.VALIDATION;
 
 public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
@@ -21,6 +22,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
         Sinks.Many<AlbumReleaseUploadingStatus> eventPublisher = Sinks.many().unicast().onBackpressureBuffer();
 
         eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(RECEIVED));
+        eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(VALIDATION));
 
         eventPublisher.tryEmitComplete();
 

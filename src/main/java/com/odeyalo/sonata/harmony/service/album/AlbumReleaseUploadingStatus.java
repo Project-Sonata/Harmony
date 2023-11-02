@@ -14,6 +14,7 @@ public class AlbumReleaseUploadingStatus {
     Type type;
 
     public enum Type {
-        RECEIVED
+        RECEIVED,
+        VALIDATION
     }
 }

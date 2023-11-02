@@ -11,6 +11,7 @@ import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
 
 import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.RECEIVED;
+import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.VALIDATION;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumReleaseUploaderImplTest {
@@ -35,6 +36,7 @@ public class AlbumReleaseUploaderImplTest {
         testable.uploadAlbumRelease(info, tracks, coverImage)
                 .as(StepVerifier::create)
                 .expectNextMatches(status -> compareStatusType(status, RECEIVED))
+                .expectNextMatches(status -> compareStatusType(status, VALIDATION))
                 .verifyComplete();
     }
 
