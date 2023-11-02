@@ -5,6 +5,8 @@ import com.odeyalo.sonata.harmony.model.*;
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
+import com.odeyalo.sonata.harmony.service.album.support.AlbumCoverImageUploader;
+import com.odeyalo.sonata.harmony.service.album.support.MockAlbumCoverImageUploader;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Flux;
@@ -14,11 +16,14 @@ import java.util.List;
 
 public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
     private final AlbumReleaseRepository albumRepository;
+    private final AlbumCoverImageUploader albumCoverImageUploader;
 
-    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository) {
+    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository, AlbumCoverImageUploader albumCoverImageUploader) {
 
         this.albumRepository = albumRepository;
+        this.albumCoverImageUploader = albumCoverImageUploader;
     }
+
 
     @Override
     @NotNull
@@ -39,7 +44,8 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
         AlbumReleaseEntity releaseEntity = AlbumReleaseEntity.builder()
                 .albumName(info.getAlbumName())
-                .releaseDate(ReleaseDate.onlyYear(2023)) // TODO: Fix me
+                .releaseDate(info.getReleaseDate())
+                .totalTracksCount(info.getTotalTracksCount())
                 .releaseDatePrecision("YEAR")
                 .albumType(info.getAlbumType())
                 .artists(artists)
@@ -50,10 +56,11 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
         return albumRepository.save(releaseEntity)
                 .flatMap(saved -> Mono.just(AlbumRelease.builder()
                         .id(saved.getId())
-                        .name(info.getAlbumName())
-                        .totalTracksCount(info.getTotalTracksCount())
-                        .albumType(info.getAlbumType())
+                        .name(saved.getAlbumName())
+                        .totalTracksCount(saved.getTotalTracksCount())
+                        .albumType(saved.getAlbumType())
                         .artists(info.getArtists())
+                        .releaseDate(saved.getReleaseDate())
                         .tracks(TrackContainer.fromCollection(convertedTracks))
                         .images(ImageContainer.one(Image.urlOnly("https://cdn.sonata.com/i/image")))
                         .build()));

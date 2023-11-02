@@ -6,6 +6,7 @@ import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseReposito
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
+import com.odeyalo.sonata.harmony.service.album.support.MockAlbumCoverImageUploader;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class AlbumReleaseUploaderImplTest {
     @BeforeEach
     void setUp() {
 
-        testable = new AlbumReleaseUploaderImpl(albumRepository);
+        testable = new AlbumReleaseUploaderImpl(albumRepository, new MockAlbumCoverImageUploader(SAVED_IMAGE_URL));
 
     }
 
@@ -137,6 +138,18 @@ public class AlbumReleaseUploaderImplTest {
     }
 
     @Test
+    void shouldReturnReleaseDate() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> trackFiles = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getReleaseDate(), actual.getReleaseDate()))
+                .verifyComplete();
+    }
+
+    @Test
     void shouldSaveAlbumRelease() {
         var albumReleaseInfo = createUploadAlbumReleaseInfo();
         Flux<FilePart> trackFiles = prepareTrackFiles();
@@ -196,6 +209,7 @@ public class AlbumReleaseUploaderImplTest {
                 .totalTracksCount(1)
                 .albumType(AlbumType.SINGLE)
                 .tracks(tracks)
+                .releaseDate(ReleaseDate.onlyYear(2020))
                 .artists(artists)
                 .build();
     }

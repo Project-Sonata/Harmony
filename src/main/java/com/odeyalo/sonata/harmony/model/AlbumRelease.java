@@ -11,6 +11,7 @@ public class AlbumRelease {
     Long id;
     String name;
     Integer totalTracksCount;
+    ReleaseDate releaseDate;
     AlbumType albumType;
     ArtistContainer artists;
     TrackContainer tracks;
