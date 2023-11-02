@@ -1,6 +1,8 @@
 package com.odeyalo.sonata.harmony.service;
 
-import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.model.*;
+import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
+import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,10 @@ import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
 
 import java.util.Objects;
+import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumReleaseUploaderImplTest {
@@ -92,6 +98,33 @@ public class AlbumReleaseUploaderImplTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnUploadedTracks() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> trackFiles = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        TrackContainer tracks = requireNonNull(testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover).block()).getTracks();
+
+        assertThat(tracks).hasSize(albumReleaseInfo.getTotalTracksCount());
+
+        albumReleaseInfo.getTracks().forEach((track) -> assertTrack(tracks, track));
+    }
+
+    private static void assertTrack(TrackContainer tracks, TrackUploadTarget track) {
+        Optional<Track> foundTrackOptional = tracks.findByTrackName(track.getTrackName());
+
+        assertThat(foundTrackOptional).isPresent().as("Track should be returned!");
+
+        Track foundTrack = foundTrackOptional.get();
+
+        assertThat(foundTrack.getIndex()).isEqualTo(track.getIndex());
+        assertThat(foundTrack.getDiscNumber()).isEqualTo(track.getDiscNumber());
+        assertThat(foundTrack.getDurationMs()).isEqualTo(track.getDurationMs());
+        assertThat(foundTrack.getTrackName()).isEqualTo(track.getTrackName());
+        assertThat(foundTrack.getArtists()).isEqualTo(track.getArtists());
+    }
+
     @NotNull
     private static Mono<FilePart> prepareAlbumCoverFile() {
         return Mono.just(new FilePartStub(Flux.empty()));
@@ -104,10 +137,27 @@ public class AlbumReleaseUploaderImplTest {
 
     @NotNull
     private static UploadAlbumReleaseInfo createUploadAlbumReleaseInfo() {
+        ArtistContainer artists = ArtistContainer.solo(Artist.of("booones", "BONES"));
+
+        TrackUploadTargetContainer tracks = TrackUploadTargetContainer.builder()
+                .item(TrackUploadTarget.builder()
+                        .trackName("dudeness")
+                        .durationMs(1000L)
+                        .isExplicit(true)
+                        .hasLyrics(true)
+                        .fileId("fileid")
+                        .artists(artists)
+                        .discNumber(1)
+                        .index(0)
+                        .build())
+                .build();
+
         return UploadAlbumReleaseInfo.builder()
                 .albumName("something")
                 .totalTracksCount(1)
                 .albumType(AlbumType.SINGLE)
+                .tracks(tracks)
+                .artists(artists)
                 .build();
     }
 }

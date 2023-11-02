@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Value
 @Builder
@@ -22,6 +23,10 @@ public class TrackContainer implements Iterable<Track> {
     public static TrackContainer fromCollection(@NotNull Collection<Track> items) {
         Assert.noNullElements(items, "Collection should not contain null elements!");
         return builder().items(items).build();
+    }
+
+    public Optional<Track> findByTrackName(@NotNull String trackName) {
+        return items.stream().filter(track -> track.getTrackName().equals(trackName)).findFirst();
     }
 
     public int size() {

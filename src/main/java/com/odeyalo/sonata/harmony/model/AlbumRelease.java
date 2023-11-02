@@ -13,4 +13,5 @@ public class AlbumRelease {
     Integer totalTracksCount;
     AlbumType albumType;
     ArtistContainer artists;
+    TrackContainer tracks;
 }
