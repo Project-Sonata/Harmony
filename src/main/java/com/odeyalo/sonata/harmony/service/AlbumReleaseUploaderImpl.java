@@ -8,8 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.RECEIVED;
-import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.VALIDATION;
+import static com.odeyalo.sonata.harmony.service.album.AlbumReleaseUploadingStatus.Type.*;
 
 public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
@@ -23,6 +22,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
         eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(RECEIVED));
         eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(VALIDATION));
+        eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(IMAGE_UPLOAD));
 
         eventPublisher.tryEmitComplete();
 
