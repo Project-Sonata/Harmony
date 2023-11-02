@@ -1,16 +1,12 @@
 package com.odeyalo.sonata.harmony.model;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Value;
 
-@Data
+@Value
 @AllArgsConstructor(staticName = "of")
-@NoArgsConstructor
 @Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Track {
     String id;
     String trackName;
