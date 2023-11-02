@@ -22,7 +22,8 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
         eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(RECEIVED));
         eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(VALIDATION));
-        eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(IMAGE_UPLOAD));
+        eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(IMAGE_UPLOAD_STARTED));
+        eventPublisher.tryEmitNext(AlbumReleaseUploadingStatus.of(IMAGE_UPLOAD_FINISHED));
 
         eventPublisher.tryEmitComplete();
 

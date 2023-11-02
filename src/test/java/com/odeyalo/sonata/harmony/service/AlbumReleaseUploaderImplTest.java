@@ -36,7 +36,8 @@ public class AlbumReleaseUploaderImplTest {
                 .as(StepVerifier::create)
                 .expectNextMatches(status -> compareStatusType(status, RECEIVED))
                 .expectNextMatches(status -> compareStatusType(status, VALIDATION))
-                .expectNextMatches(status -> compareStatusType(status, IMAGE_UPLOAD))
+                .expectNextMatches(status -> compareStatusType(status, IMAGE_UPLOAD_STARTED))
+                .expectNextMatches(status -> compareStatusType(status, IMAGE_UPLOAD_FINISHED))
                 .verifyComplete();
     }
 
