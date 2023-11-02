@@ -17,6 +17,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
 
         return Mono.just(AlbumRelease.builder()
+                .id("hello")
                 .name(info.getAlbumName())
                 .totalTracksCount(info.getTotalTracksCount())
                 .albumType(info.getAlbumType())

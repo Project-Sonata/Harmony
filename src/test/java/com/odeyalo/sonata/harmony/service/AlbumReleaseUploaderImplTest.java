@@ -33,6 +33,18 @@ public class AlbumReleaseUploaderImplTest {
 
 
     @Test
+    void shouldReturnIdForAlbumRelease() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> actual.getId() != null)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldReturnSameNameAsProvided() {
         var albumReleaseInfo = createUploadAlbumReleaseInfo();
         Flux<FilePart> tracks = prepareTrackFiles();
