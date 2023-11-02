@@ -10,4 +10,5 @@ import lombok.Value;
 public class AlbumRelease {
     String name;
     Integer totalTracksCount;
+    AlbumType albumType;
 }

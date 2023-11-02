@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.service;
 
+import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,18 @@ public class AlbumReleaseUploaderImplTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnAlbumType() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getAlbumType(), actual.getAlbumType()))
+                .verifyComplete();
+    }
+
     @NotNull
     private static Mono<FilePart> prepareAlbumCoverFile() {
         return Mono.just(new FilePartStub(Flux.empty()));
@@ -70,6 +83,7 @@ public class AlbumReleaseUploaderImplTest {
         return UploadAlbumReleaseInfo.builder()
                 .albumName("something")
                 .totalTracksCount(1)
+                .albumType(AlbumType.SINGLE)
                 .build();
     }
 }
