@@ -16,6 +16,8 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                                                  @NotNull Mono<FilePart> coverImage) {
 
 
-        return Mono.just(new AlbumRelease());
+        return Mono.just(AlbumRelease.builder()
+                .name(info.getAlbumName())
+                .build());
     }
 }

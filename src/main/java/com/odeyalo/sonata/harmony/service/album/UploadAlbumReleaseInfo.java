@@ -8,4 +8,5 @@ import lombok.Value;
 @AllArgsConstructor(staticName = "of")
 @Builder
 public class UploadAlbumReleaseInfo {
+    String albumName;
 }

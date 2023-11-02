@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
 
+import java.util.Objects;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AlbumReleaseUploaderImplTest {
 
@@ -17,7 +19,7 @@ public class AlbumReleaseUploaderImplTest {
 
     @Test
     void shouldReturnSavedAlbum() {
-        var albumReleaseInfo = UploadAlbumReleaseInfo.builder().build();
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
         Flux<FilePart> tracks = Flux.just(new FilePartStub(Flux.empty()));
         Mono<FilePart> albumCover = Mono.just(new FilePartStub(Flux.empty()));
 
@@ -25,5 +27,23 @@ public class AlbumReleaseUploaderImplTest {
                 .as(StepVerifier::create)
                 .expectNextCount(1)
                 .verifyComplete();
+    }
+
+    @Test
+    void shouldReturnSameNameAsProvided() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> tracks = Flux.just(new FilePartStub(Flux.empty()));
+        Mono<FilePart> albumCover = Mono.just(new FilePartStub(Flux.empty()));
+
+        testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(albumReleaseInfo.getAlbumName(), actual.getName()))
+                .verifyComplete();
+    }
+
+    private static UploadAlbumReleaseInfo createUploadAlbumReleaseInfo() {
+        return UploadAlbumReleaseInfo.builder()
+                .albumName("something")
+                .build();
     }
 }
