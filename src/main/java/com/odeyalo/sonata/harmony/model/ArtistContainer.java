@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Value
 @Builder
@@ -41,6 +42,10 @@ public class ArtistContainer implements Iterable<Artist> {
 
     public Artist get(int index) {
         return items.get(index);
+    }
+
+    public Stream<Artist> stream() {
+        return items.stream();
     }
 
     @NotNull
