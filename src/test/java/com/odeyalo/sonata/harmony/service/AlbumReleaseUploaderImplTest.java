@@ -24,6 +24,7 @@ public class AlbumReleaseUploaderImplTest {
 
     AlbumReleaseUploaderImpl testable = new AlbumReleaseUploaderImpl();
 
+    static final String SAVED_IMAGE_URL = "https://cdn.sonata.com/i/image";
 
     @Test
     void shouldReturnSavedAlbum() {
@@ -109,6 +110,18 @@ public class AlbumReleaseUploaderImplTest {
         assertThat(tracks).hasSize(albumReleaseInfo.getTotalTracksCount());
 
         albumReleaseInfo.getTracks().forEach((track) -> assertTrack(tracks, track));
+    }
+
+    @Test
+    void shouldReturnImagesForAlbumCover() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> trackFiles = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(actual.getImages().get(0).getUrl(), SAVED_IMAGE_URL))
+                .verifyComplete();
     }
 
     private static void assertTrack(TrackContainer tracks, TrackUploadTarget track) {

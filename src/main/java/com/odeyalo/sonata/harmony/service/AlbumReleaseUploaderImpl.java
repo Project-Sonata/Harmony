@@ -1,8 +1,6 @@
 package com.odeyalo.sonata.harmony.service;
 
-import com.odeyalo.sonata.harmony.model.AlbumRelease;
-import com.odeyalo.sonata.harmony.model.Track;
-import com.odeyalo.sonata.harmony.model.TrackContainer;
+import com.odeyalo.sonata.harmony.model.*;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +28,7 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                 .albumType(info.getAlbumType())
                 .artists(info.getArtists())
                 .tracks(TrackContainer.fromCollection(convertedTracks))
+                        .images(ImageContainer.one(Image.urlOnly("https://cdn.sonata.com/i/image")))
                 .build());
     }
 

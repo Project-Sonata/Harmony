@@ -14,4 +14,5 @@ public class AlbumRelease {
     AlbumType albumType;
     ArtistContainer artists;
     TrackContainer tracks;
+    ImageContainer images;
 }
