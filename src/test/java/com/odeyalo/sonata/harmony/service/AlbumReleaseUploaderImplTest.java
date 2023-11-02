@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.service;
 
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.codec.multipart.FilePart;
@@ -20,8 +21,8 @@ public class AlbumReleaseUploaderImplTest {
     @Test
     void shouldReturnSavedAlbum() {
         var albumReleaseInfo = createUploadAlbumReleaseInfo();
-        Flux<FilePart> tracks = Flux.just(new FilePartStub(Flux.empty()));
-        Mono<FilePart> albumCover = Mono.just(new FilePartStub(Flux.empty()));
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
 
         testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
                 .as(StepVerifier::create)
@@ -29,11 +30,12 @@ public class AlbumReleaseUploaderImplTest {
                 .verifyComplete();
     }
 
+
     @Test
     void shouldReturnSameNameAsProvided() {
         var albumReleaseInfo = createUploadAlbumReleaseInfo();
-        Flux<FilePart> tracks = Flux.just(new FilePartStub(Flux.empty()));
-        Mono<FilePart> albumCover = Mono.just(new FilePartStub(Flux.empty()));
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
 
         testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
                 .as(StepVerifier::create)
@@ -41,9 +43,33 @@ public class AlbumReleaseUploaderImplTest {
                 .verifyComplete();
     }
 
+    @Test
+    void shouldReturnTotalTracksCount() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> tracks = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        testable.uploadAlbumRelease(albumReleaseInfo, tracks, albumCover)
+                .as(StepVerifier::create)
+                .expectNextMatches(actual ->  Objects.equals(albumReleaseInfo.getTotalTracksCount(), actual.getTotalTracksCount()))
+                .verifyComplete();
+    }
+
+    @NotNull
+    private static Mono<FilePart> prepareAlbumCoverFile() {
+        return Mono.just(new FilePartStub(Flux.empty()));
+    }
+
+    @NotNull
+    private static Flux<FilePart> prepareTrackFiles() {
+        return Flux.just(new FilePartStub(Flux.empty()));
+    }
+
+    @NotNull
     private static UploadAlbumReleaseInfo createUploadAlbumReleaseInfo() {
         return UploadAlbumReleaseInfo.builder()
                 .albumName("something")
+                .totalTracksCount(1)
                 .build();
     }
 }

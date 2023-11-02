@@ -9,4 +9,5 @@ import lombok.Value;
 @Builder
 public class UploadAlbumReleaseInfo {
     String albumName;
+    Integer totalTracksCount;
 }
