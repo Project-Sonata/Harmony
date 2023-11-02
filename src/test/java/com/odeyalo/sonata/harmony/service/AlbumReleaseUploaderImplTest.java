@@ -144,7 +144,10 @@ public class AlbumReleaseUploaderImplTest {
 
         AlbumRelease release = requireNonNull(testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover).block());
 
-        albumRepository.findById(release.getId());
+        albumRepository.findById(release.getId())
+                .as(StepVerifier::create)
+                .expectNextCount(1)
+                .verifyComplete();
     }
 
     private static void assertTrack(TrackContainer tracks, TrackUploadTarget track) {

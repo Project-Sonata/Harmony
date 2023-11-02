@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.service;
 
+import com.odeyalo.sonata.harmony.entity.*;
 import com.odeyalo.sonata.harmony.model.*;
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
@@ -27,16 +28,47 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
 
 
         List<Track> convertedTracks = info.getTracks().stream().map(AlbumReleaseUploaderImpl::convertToTrack).toList();
+        ArtistContainerEntity artists = ArtistContainerEntity.multiple(info.getArtists()
+                .stream().map(artist -> ArtistEntity.builder().sonataId(artist.getSonataId())
+                        .name(artist.getName())
+                        .build()).toList());
 
-        return Mono.just(AlbumRelease.builder()
-                .id(1L)
-                .name(info.getAlbumName())
-                .totalTracksCount(info.getTotalTracksCount())
+        List<SimplifiedTrackEntity> trackObjects = info.getTracks().stream()
+                .map(trackUploadTarget -> toSimplifiedTrack(artists, trackUploadTarget))
+                .toList();
+
+        AlbumReleaseEntity releaseEntity = AlbumReleaseEntity.builder()
+                .albumName(info.getAlbumName())
+                .releaseDate(ReleaseDate.onlyYear(2023)) // TODO: Fix me
+                .releaseDatePrecision("YEAR")
                 .albumType(info.getAlbumType())
-                .artists(info.getArtists())
-                .tracks(TrackContainer.fromCollection(convertedTracks))
+                .artists(artists)
+                .images(AlbumCoverImageContainerEntity.empty())
+                .tracks(TrackContainerEntity.multiple(trackObjects))
+                .build();
+
+        return albumRepository.save(releaseEntity)
+                .flatMap(saved -> Mono.just(AlbumRelease.builder()
+                        .id(saved.getId())
+                        .name(info.getAlbumName())
+                        .totalTracksCount(info.getTotalTracksCount())
+                        .albumType(info.getAlbumType())
+                        .artists(info.getArtists())
+                        .tracks(TrackContainer.fromCollection(convertedTracks))
                         .images(ImageContainer.one(Image.urlOnly("https://cdn.sonata.com/i/image")))
-                .build());
+                        .build()));
+    }
+
+    private static SimplifiedTrackEntity toSimplifiedTrack(ArtistContainerEntity artists, TrackUploadTarget trackUploadTarget) {
+        return SimplifiedTrackEntity.builder()
+                .name(trackUploadTarget.getTrackName())
+                .artists(artists)
+                .durationMs(trackUploadTarget.getDurationMs())
+                .discNumber(trackUploadTarget.getDiscNumber())
+                .index(trackUploadTarget.getIndex())
+                .explicit(trackUploadTarget.isExplicit())
+                .hasLyrics(trackUploadTarget.hasLyrics())
+                .build();
     }
 
     private static Track convertToTrack(TrackUploadTarget target) {
