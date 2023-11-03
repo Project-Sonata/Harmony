@@ -17,4 +17,8 @@ public class Track {
     int index;
     ArtistContainer artists;
     SimplifiedAlbumRelease album;
+
+    public boolean hasLyrics() {
+        return hasLyrics;
+    }
 }
