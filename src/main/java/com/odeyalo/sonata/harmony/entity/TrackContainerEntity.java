@@ -8,6 +8,7 @@ import org.springframework.util.Assert;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Data
 @AllArgsConstructor(staticName = "multiple")
@@ -56,5 +57,9 @@ public class TrackContainerEntity implements Iterable<SimplifiedTrackEntity> {
     @Override
     public Iterator<SimplifiedTrackEntity> iterator() {
         return items.iterator();
+    }
+
+    public Stream<SimplifiedTrackEntity> stream() {
+        return items.stream();
     }
 }

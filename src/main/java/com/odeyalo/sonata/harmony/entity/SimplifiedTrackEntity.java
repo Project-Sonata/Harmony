@@ -27,14 +27,19 @@ public class SimplifiedTrackEntity implements ArtistContainerHolder {
     @Column("is_explicit")
     boolean explicit;
     @Column("has_lyrics")
-    @Accessors(fluent = true)
     boolean hasLyrics;
     @Column("disc_number")
     Integer discNumber;
     @Column("index")
     Integer index;
+    @Column("track_url")
+    String trackUrl;
     @Column("album_id")
     Long albumId;
     @Transient
     ArtistContainerEntity artists;
+
+    public boolean hasLyrics() {
+        return hasLyrics;
+    }
 }

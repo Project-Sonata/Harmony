@@ -1,13 +1,11 @@
 package com.odeyalo.sonata.harmony.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NonNull;
-import lombok.Value;
+import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 
@@ -20,6 +18,7 @@ import static java.util.Collections.emptyList;
 public class ArtistContainerEntity implements Iterable<ArtistEntity> {
     @NotNull
     @NonNull
+    @Getter(value = AccessLevel.PRIVATE)
     List<ArtistEntity> artists;
 
     public static ArtistContainerEntity solo(@NotNull ArtistEntity artist) {
@@ -46,5 +45,9 @@ public class ArtistContainerEntity implements Iterable<ArtistEntity> {
     @Override
     public Iterator<ArtistEntity> iterator() {
         return artists.iterator();
+    }
+
+    public Stream<ArtistEntity> stream() {
+        return artists.stream();
     }
 }
