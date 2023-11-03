@@ -18,4 +18,8 @@ public abstract class ArtistContainerEntityConverter {
         List<ArtistEntity> artistEntities = container.stream().map(artist -> artistEntityConverter.toArtistEntity(artist)).toList();
         return ArtistContainerEntity.multiple(artistEntities);
     }
+
+    public void setArtistEntityConverter(ArtistEntityConverter artistEntityConverter) {
+        this.artistEntityConverter = artistEntityConverter;
+    }
 }
