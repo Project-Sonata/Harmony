@@ -97,7 +97,6 @@ class AlbumReleaseConverterTest {
                 .height(300)
                 .url("https://cdn.sonata.com/i/image")
                 .albumId(1L)
-
                 .build());
     }
 

@@ -19,4 +19,9 @@ public abstract class TrackContainerConverter {
 
         return TrackContainer.fromCollection(tracks);
     }
+
+    public TrackContainerConverter setTrackConverter(TrackConverter trackConverter) {
+        this.trackConverter = trackConverter;
+        return this;
+    }
 }

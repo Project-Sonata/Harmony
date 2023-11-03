@@ -8,10 +8,7 @@ import com.odeyalo.sonata.harmony.model.*;
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import com.odeyalo.sonata.harmony.service.album.stage.AlbumReleaseUploadingStage;
-import com.odeyalo.sonata.harmony.support.converter.ArtistContainerConverter;
-import com.odeyalo.sonata.harmony.support.converter.ArtistContainerEntityConverter;
-import com.odeyalo.sonata.harmony.support.converter.ImageContainerConverter;
-import com.odeyalo.sonata.harmony.support.converter.TrackConverter;
+import com.odeyalo.sonata.harmony.support.converter.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Flux;
@@ -26,19 +23,22 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
     private final TrackConverter trackConverter;
     private final ImageContainerConverter imageContainerConverter;
     private final ArtistContainerConverter artistContainerConverter;
+    private final AlbumReleaseConverter albumReleaseConverter;
 
     public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository,
                                     List<AlbumReleaseUploadingStage> steps,
                                     ArtistContainerEntityConverter artistContainerEntityConverter,
                                     TrackConverter trackConverter,
                                     ImageContainerConverter imageContainerConverter,
-                                    ArtistContainerConverter artistContainerConverter) {
+                                    ArtistContainerConverter artistContainerConverter,
+                                    AlbumReleaseConverter albumReleaseConverter) {
         this.steps = steps;
         this.albumRepository = albumRepository;
         this.artistContainerEntityConverter = artistContainerEntityConverter;
         this.trackConverter = trackConverter;
         this.imageContainerConverter = imageContainerConverter;
         this.artistContainerConverter = artistContainerConverter;
+        this.albumReleaseConverter = albumReleaseConverter;
     }
 
     @Override
@@ -47,8 +47,6 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                                                  @NotNull Flux<FilePart> tracks,
                                                  @NotNull Mono<FilePart> coverImage) {
 
-        List<Track> convertedTracks = info.getTracks().stream().map(trackConverter::toTrack).toList();
-
         AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> initialBuilder = toAlbumReleaseEntityBuilder(info);
         initialBuilder.tracks(TrackContainerEntity.empty());
 
@@ -56,23 +54,11 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                 .flatMap(stage -> stage.processAlbumUpload(info, initialBuilder, tracks, coverImage))
                 .reduce((prevProcessed, updatedBuilder) -> updatedBuilder)
                 .flatMap(builder -> albumRepository.save(builder.build())
-                        .map(saved -> buildAlbumRelease(convertedTracks, saved)));
+                        .map(this::buildAlbumRelease));
     }
 
-    private AlbumRelease buildAlbumRelease(List<Track> convertedTracks, AlbumReleaseEntity saved) {
-        ArtistContainer artists = artistContainerConverter.toArtistContainer(saved.getArtists());
-        ImageContainer images = imageContainerConverter.toImageContainer(saved.getImages());
-
-        return AlbumRelease.builder()
-                .id(saved.getId())
-                .name(saved.getAlbumName())
-                .totalTracksCount(saved.getTotalTracksCount())
-                .albumType(saved.getAlbumType())
-                .artists(artists)
-                .releaseDate(saved.getReleaseDate())
-                .tracks(TrackContainer.fromCollection(convertedTracks))
-                .images(images)
-                .build();
+    private AlbumRelease buildAlbumRelease(AlbumReleaseEntity saved) {
+        return albumReleaseConverter.toAlbumRelease(saved);
     }
 
     private AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> toAlbumReleaseEntityBuilder(@NotNull UploadAlbumReleaseInfo info) {

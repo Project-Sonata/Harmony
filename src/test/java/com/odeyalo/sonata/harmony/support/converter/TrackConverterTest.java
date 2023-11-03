@@ -1,5 +1,8 @@
 package com.odeyalo.sonata.harmony.support.converter;
 
+import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
+import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.entity.TrackEntity;
 import com.odeyalo.sonata.harmony.model.Artist;
 import com.odeyalo.sonata.harmony.model.ArtistContainer;
 import com.odeyalo.sonata.harmony.model.Track;
@@ -35,6 +38,32 @@ class TrackConverterTest {
         assertThat(result.hasLyrics()).isEqualTo(expected.hasLyrics());
     }
 
+    @Test
+    void toTrackFromEntity() {
+        TrackEntity expected = createTrackEntity();
+
+        Track result = trackConverter.toTrack(expected);
+
+        assertThat(result.getTrackName()).isEqualTo(expected.getName());
+        assertThat(result.getIndex()).isEqualTo(expected.getIndex());
+        assertThat(result.getDiscNumber()).isEqualTo(expected.getDiscNumber());
+        assertThat(result.getDurationMs()).isEqualTo(expected.getDurationMs());
+        assertThat(result.isExplicit()).isEqualTo(expected.isExplicit());
+        assertThat(result.hasLyrics()).isEqualTo(expected.hasLyrics());
+    }
+
+    private static TrackEntity createTrackEntity() {
+        return TrackEntity.builder()
+                .name("dudeness")
+                .index(1)
+                .hasLyrics(true)
+                .explicit(false)
+                .artists(ArtistContainerEntity.solo(ArtistEntity.of(1L, "id", "corn wave")))
+                .discNumber(1)
+                .durationMs(1488L)
+                .build();
+    }
+
     private static TrackUploadTarget createTrackUploadTarget() {
         return TrackUploadTarget.builder()
                 .trackName("dudeness")
@@ -44,6 +73,7 @@ class TrackConverterTest {
                 .isExplicit(false)
                 .artists(ArtistContainer.solo(Artist.of("id", "corn wave")))
                 .discNumber(1)
+                .durationMs(1488L)
                 .build();
     }
 }

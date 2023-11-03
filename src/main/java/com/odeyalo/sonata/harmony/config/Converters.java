@@ -15,7 +15,12 @@ public class Converters {
     }
 
     public TrackConverter trackConverter() {
-        return new TrackConverterImpl();
+        return new TrackConverterImpl(artistContainerConverter());
+    }
+
+    public TrackContainerConverter trackContainerConverter() {
+        TrackContainerConverterImpl trackContainerConverter = new TrackContainerConverterImpl();
+        return trackContainerConverter.setTrackConverter(trackConverter());
     }
 
     public ImageContainerConverter imageContainerConverter() {
@@ -23,7 +28,7 @@ public class Converters {
         return imageContainerConverter.setImageConverter(imageConverter());
     }
 
-    private ImageConverter imageConverter() {
+    public ImageConverter imageConverter() {
         return new ImageConverterImpl();
     }
 
@@ -32,7 +37,11 @@ public class Converters {
         return artistContainerConverter.setArtistConverter(artistConverter());
     }
 
-    private ArtistConverter artistConverter() {
+    public ArtistConverter artistConverter() {
         return new ArtistConverterImpl();
+    }
+
+    public AlbumReleaseConverter albumReleaseConverter() {
+        return new AlbumReleaseConverterImpl(imageContainerConverter(), artistContainerConverter(), trackContainerConverter());
     }
 }

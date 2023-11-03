@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 public class TracksUploadAlbumReleaseUploadingStage implements AlbumReleaseUploadingStage {
-    private AlbumTracksUploader albumTracksUploader;
+    private final AlbumTracksUploader albumTracksUploader;
 
     public TracksUploadAlbumReleaseUploadingStage(AlbumTracksUploader albumTracksUploader) {
         this.albumTracksUploader = albumTracksUploader;
