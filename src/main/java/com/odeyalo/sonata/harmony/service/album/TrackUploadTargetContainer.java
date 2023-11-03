@@ -4,9 +4,7 @@ import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -25,6 +23,12 @@ public class TrackUploadTargetContainer implements Iterable<TrackUploadTarget> {
     public static TrackUploadTargetContainer fromCollection(@NotNull Collection<TrackUploadTarget> items) {
         Assert.noNullElements(items, "Items should not contain null element!");
         return builder().items(items).build();
+    }
+
+    public Optional<TrackUploadTarget> findByTrackFileId(String fileId) {
+        return items.stream()
+                .filter(trackUploadTarget -> Objects.equals(trackUploadTarget.getFileId(), fileId))
+                .findFirst();
     }
 
     public int size() {
