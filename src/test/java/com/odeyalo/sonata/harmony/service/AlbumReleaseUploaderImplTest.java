@@ -7,6 +7,7 @@ import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import com.odeyalo.sonata.harmony.service.album.support.MockAlbumCoverImageUploader;
+import com.odeyalo.sonata.harmony.service.album.support.MockAlbumTracksUploader;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ public class AlbumReleaseUploaderImplTest {
 
 
     static final String SAVED_IMAGE_URL = "https://cdn.sonata.com/i/image";
+    static final String SAVED_TRACK_URL = "https://cdn.sonata.com/m/track";
 
     AlbumReleaseRepository albumRepository = new InMemoryAlbumReleaseRepository();
 
@@ -36,7 +38,9 @@ public class AlbumReleaseUploaderImplTest {
     @BeforeEach
     void setUp() {
 
-        testable = new AlbumReleaseUploaderImpl(albumRepository, new MockAlbumCoverImageUploader(SAVED_IMAGE_URL));
+        testable = new AlbumReleaseUploaderImpl(albumRepository,
+                new MockAlbumCoverImageUploader(SAVED_IMAGE_URL),
+                new MockAlbumTracksUploader(SAVED_TRACK_URL));
 
     }
 
@@ -163,6 +167,21 @@ public class AlbumReleaseUploaderImplTest {
                 .verifyComplete();
     }
 
+
+    @Test
+    void shouldUploadTrackFilesToStorage() {
+        var albumReleaseInfo = createUploadAlbumReleaseInfo();
+        Flux<FilePart> trackFiles = prepareTrackFiles();
+        Mono<FilePart> albumCover = prepareAlbumCoverFile();
+
+        AlbumRelease release = requireNonNull(testable.uploadAlbumRelease(albumReleaseInfo, trackFiles, albumCover).block());
+
+        albumRepository.findById(release.getId())
+                .as(StepVerifier::create)
+                .expectNextMatches(actual -> Objects.equals(actual.getTracks().get(0).getTrackUrl(), SAVED_TRACK_URL))
+                .verifyComplete();
+    }
+
     private static void assertTrack(TrackContainer tracks, TrackUploadTarget track) {
         Optional<Track> foundTrackOptional = tracks.findByTrackName(track.getTrackName());
 
@@ -184,7 +203,7 @@ public class AlbumReleaseUploaderImplTest {
 
     @NotNull
     private static Flux<FilePart> prepareTrackFiles() {
-        return Flux.just(new FilePartStub(Flux.empty()));
+        return Flux.just(new FilePartStub(Flux.empty(), 2000, "track.mp3"));
     }
 
     @NotNull
@@ -197,7 +216,7 @@ public class AlbumReleaseUploaderImplTest {
                         .durationMs(1000L)
                         .isExplicit(true)
                         .hasLyrics(true)
-                        .fileId("fileid")
+                        .fileId("track.mp3")
                         .artists(artists)
                         .discNumber(1)
                         .index(0)
