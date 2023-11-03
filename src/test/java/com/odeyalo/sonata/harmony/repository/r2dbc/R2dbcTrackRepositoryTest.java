@@ -11,6 +11,7 @@ import com.odeyalo.sonata.harmony.repository.SimplifiedTrackRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcSimplifiedAlbumRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcSimplifiedTrackRepositoryDelegate;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcTrackRepositoryDelegate;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -62,6 +63,11 @@ public class R2dbcTrackRepositoryTest {
         existingAlbum = albumReleaseRepository.save(album).block();
     }
 
+    @AfterEach
+    void tearDown() {
+        testable.deleteAll()
+                .then(albumReleaseRepository.deleteAll()).block();
+    }
 
     @Test
     void shouldGenerateId() {
@@ -294,6 +300,7 @@ public class R2dbcTrackRepositoryTest {
                 .albumId(existingAlbum.getId())
                 .album(existingAlbum)
                 .artists(existingAlbum.getArtists())
+                .trackUrl("https://cdn.sonata.com/m/song1")
                 .build();
     }
 
@@ -308,6 +315,7 @@ public class R2dbcTrackRepositoryTest {
                 .albumId(existingAlbum.getId())
                 .album(existingAlbum)
                 .artists(existingAlbum.getArtists())
+                .trackUrl("https://cdn.sonata.com/m/song2")
                 .build();
     }
 

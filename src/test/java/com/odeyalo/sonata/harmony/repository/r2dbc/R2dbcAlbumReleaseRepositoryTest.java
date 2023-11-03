@@ -176,6 +176,7 @@ public class R2dbcAlbumReleaseRepositoryTest {
                 .index(0)
                 .discNumber(1)
                 .durationMs(7829L)
+                .trackUrl("https://cdn.sonata.com/m/song")
                 .build();
 
         TrackContainerEntity trackContainer = TrackContainerEntity.single(track);
