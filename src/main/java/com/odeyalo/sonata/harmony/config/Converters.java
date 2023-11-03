@@ -1,9 +1,6 @@
 package com.odeyalo.sonata.harmony.config;
 
-import com.odeyalo.sonata.harmony.support.converter.ArtistContainerEntityConverter;
-import com.odeyalo.sonata.harmony.support.converter.ArtistContainerEntityConverterImpl;
-import com.odeyalo.sonata.harmony.support.converter.ArtistEntityConverter;
-import com.odeyalo.sonata.harmony.support.converter.ArtistEntityConverterImpl;
+import com.odeyalo.sonata.harmony.support.converter.*;
 
 public class Converters {
 
@@ -17,4 +14,7 @@ public class Converters {
         return new ArtistEntityConverterImpl();
     }
 
+    public TrackConverter trackConverter() {
+        return new TrackConverterImpl();
+    }
 }
