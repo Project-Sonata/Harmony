@@ -6,8 +6,7 @@ import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import com.odeyalo.sonata.harmony.service.album.stage.AlbumReleaseUploadingStage;
-import com.odeyalo.sonata.harmony.service.album.support.AlbumCoverImageUploader;
-import com.odeyalo.sonata.harmony.service.album.support.AlbumTracksUploader;
+import com.odeyalo.sonata.harmony.support.converter.ArtistContainerEntityConverter;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
 import reactor.core.publisher.Flux;
@@ -18,10 +17,14 @@ import java.util.List;
 public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
     private final AlbumReleaseRepository albumRepository;
     private final List<AlbumReleaseUploadingStage> steps;
+    private final ArtistContainerEntityConverter artistContainerEntityConverter;
 
-    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository, List<AlbumReleaseUploadingStage> steps) {
+    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository,
+                                    List<AlbumReleaseUploadingStage> steps,
+                                    ArtistContainerEntityConverter artistContainerEntityConverter) {
         this.steps = steps;
         this.albumRepository = albumRepository;
+        this.artistContainerEntityConverter = artistContainerEntityConverter;
     }
 
     @Override
@@ -42,17 +45,6 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                         .map(saved -> buildAlbumRelease(info, convertedTracks, saved)));
     }
 
-    private static ArtistContainerEntity toArtistContainer(@NotNull UploadAlbumReleaseInfo info) {
-        return ArtistContainerEntity.multiple(info.getArtists().stream().map(AlbumReleaseUploaderImpl::convertToArtistEntity)
-                .toList());
-    }
-
-    private static ArtistEntity convertToArtistEntity(Artist artist) {
-        return ArtistEntity.builder().sonataId(artist.getSonataId())
-                .name(artist.getName())
-                .build();
-    }
-
     private static AlbumRelease buildAlbumRelease(@NotNull UploadAlbumReleaseInfo info, List<Track> convertedTracks, AlbumReleaseEntity saved) {
         return AlbumRelease.builder()
                 .id(saved.getId())
@@ -68,8 +60,8 @@ public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
                 .build();
     }
 
-    private static AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> toAlbumReleaseEntityBuilder(@NotNull UploadAlbumReleaseInfo info) {
-        ArtistContainerEntity artists = toArtistContainer(info);
+    private AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> toAlbumReleaseEntityBuilder(@NotNull UploadAlbumReleaseInfo info) {
+        ArtistContainerEntity artists = artistContainerEntityConverter.toArtistContainerEntity(info.getArtists());
 
         return AlbumReleaseEntity.builder()
                 .albumName(info.getAlbumName())
