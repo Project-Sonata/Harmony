@@ -25,6 +25,10 @@ public class TrackUploadTargetContainer implements Iterable<TrackUploadTarget> {
         return builder().items(items).build();
     }
 
+    public static TrackUploadTargetContainer empty() {
+        return builder().build();
+    }
+
     public Optional<TrackUploadTarget> findByTrackFileId(String fileId) {
         return items.stream()
                 .filter(trackUploadTarget -> Objects.equals(trackUploadTarget.getFileId(), fileId))

@@ -2,6 +2,7 @@ package com.odeyalo.sonata.harmony.service;
 
 import com.odeyalo.sonata.harmony.entity.AlbumCoverImageContainerEntity;
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
+import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity.AlbumReleaseEntityBuilder;
 import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
 import com.odeyalo.sonata.harmony.entity.TrackContainerEntity;
 import com.odeyalo.sonata.harmony.model.*;
@@ -18,15 +19,15 @@ import java.util.List;
 
 public class ChainedAlbumReleaseUploader implements AlbumReleaseUploader {
     private final AlbumReleaseRepository albumRepository;
-    private final List<AlbumReleaseUploadingStage> steps;
+    private final List<AlbumReleaseUploadingStage> stages;
     private final ArtistContainerEntityConverter artistContainerEntityConverter;
     private final AlbumReleaseConverter albumReleaseConverter;
 
     public ChainedAlbumReleaseUploader(AlbumReleaseRepository albumRepository,
-                                       List<AlbumReleaseUploadingStage> steps,
+                                       List<AlbumReleaseUploadingStage> stages,
                                        ArtistContainerEntityConverter artistContainerEntityConverter,
                                        AlbumReleaseConverter albumReleaseConverter) {
-        this.steps = steps;
+        this.stages = stages;
         this.albumRepository = albumRepository;
         this.artistContainerEntityConverter = artistContainerEntityConverter;
         this.albumReleaseConverter = albumReleaseConverter;
@@ -38,21 +39,21 @@ public class ChainedAlbumReleaseUploader implements AlbumReleaseUploader {
                                                  @NotNull Flux<FilePart> tracks,
                                                  @NotNull Mono<FilePart> coverImage) {
 
-        AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> initialBuilder = toAlbumReleaseEntityBuilder(info);
-        initialBuilder.tracks(TrackContainerEntity.empty());
+        AlbumReleaseEntityBuilder<?, ?> initialBuilder = createInitialBuilder(info);
 
-        return Flux.fromIterable(steps)
+        return Flux.fromIterable(stages)
                 .flatMap(stage -> stage.processAlbumUpload(info, initialBuilder, tracks, coverImage))
                 .reduce((prevProcessed, updatedBuilder) -> updatedBuilder)
-                .flatMap(builder -> albumRepository.save(builder.build())
-                        .map(this::buildAlbumRelease));
+                .flatMap(this::saveAndConvert);
     }
 
-    private AlbumRelease buildAlbumRelease(AlbumReleaseEntity saved) {
-        return albumReleaseConverter.toAlbumRelease(saved);
+    @NotNull
+    private Mono<AlbumRelease> saveAndConvert(AlbumReleaseEntityBuilder<?, ?> builder) {
+        return albumRepository.save(builder.build())
+                .map(albumReleaseConverter::toAlbumRelease);
     }
 
-    private AlbumReleaseEntity.AlbumReleaseEntityBuilder<?, ?> toAlbumReleaseEntityBuilder(@NotNull UploadAlbumReleaseInfo info) {
+    private AlbumReleaseEntityBuilder<?, ?> createInitialBuilder(@NotNull UploadAlbumReleaseInfo info) {
         ArtistContainerEntity artists = artistContainerEntityConverter.toArtistContainerEntity(info.getArtists());
 
         return AlbumReleaseEntity.builder()
