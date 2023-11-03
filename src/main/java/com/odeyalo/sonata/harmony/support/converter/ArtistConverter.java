@@ -1,0 +1,12 @@
+package com.odeyalo.sonata.harmony.support.converter;
+
+import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.model.Artist;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface ArtistConverter {
+
+    Artist toArtist(ArtistEntity artist);
+
+}

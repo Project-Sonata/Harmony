@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor(staticName = "of")
-@Builder
+@Builder(toBuilder = true)
 public class Track {
     String id;
     String trackName;

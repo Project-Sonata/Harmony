@@ -1,6 +1,8 @@
 package com.odeyalo.sonata.harmony.support.converter;
 
 import com.odeyalo.sonata.harmony.entity.AlbumCoverImageContainerEntity;
+import com.odeyalo.sonata.harmony.entity.ArtistEntity;
+import com.odeyalo.sonata.harmony.model.Artist;
 import com.odeyalo.sonata.harmony.model.Image;
 import com.odeyalo.sonata.harmony.model.ImageContainer;
 import org.mapstruct.Mapper;
@@ -19,4 +21,8 @@ public abstract class ImageContainerConverter {
         return ImageContainer.of(images);
     }
 
+    public ImageContainerConverter setImageConverter(ImageConverter imageConverter) {
+        this.imageConverter = imageConverter;
+        return this;
+    }
 }

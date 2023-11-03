@@ -12,7 +12,10 @@ import com.odeyalo.sonata.harmony.service.album.stage.TracksUploadAlbumReleaseUp
 import com.odeyalo.sonata.harmony.service.album.stage.UploadCoverImageAlbumReleaseUploadingStage;
 import com.odeyalo.sonata.harmony.service.album.support.MockAlbumCoverImageUploader;
 import com.odeyalo.sonata.harmony.service.album.support.MockAlbumTracksUploader;
+import com.odeyalo.sonata.harmony.support.converter.ArtistContainerConverter;
 import com.odeyalo.sonata.harmony.support.converter.ArtistContainerEntityConverter;
+import com.odeyalo.sonata.harmony.support.converter.ImageContainerConverter;
+import com.odeyalo.sonata.harmony.support.converter.TrackConverter;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,9 +51,14 @@ public class AlbumReleaseUploaderImplTest {
                 new TracksUploadAlbumReleaseUploadingStage(new MockAlbumTracksUploader(SAVED_TRACK_URL))
         );
 
-        ArtistContainerEntityConverter converter = new Converters().artistContainerEntityConverter();
+        ArtistContainerEntityConverter artistContainerEntityConverter = new Converters().artistContainerEntityConverter();
+        TrackConverter trackConverter = new Converters().trackConverter();
+        ImageContainerConverter imageContainerConverter = new Converters().imageContainerConverter();
+        ArtistContainerConverter artistContainerConverter = new Converters().artistContainerConverter();
 
-        testable = new AlbumReleaseUploaderImpl(albumRepository, steps, converter);
+        testable = new AlbumReleaseUploaderImpl(albumRepository, steps,
+                artistContainerEntityConverter, trackConverter, imageContainerConverter,
+                artistContainerConverter);
 
     }
 

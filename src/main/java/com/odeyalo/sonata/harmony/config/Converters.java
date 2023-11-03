@@ -17,4 +17,22 @@ public class Converters {
     public TrackConverter trackConverter() {
         return new TrackConverterImpl();
     }
+
+    public ImageContainerConverter imageContainerConverter() {
+        ImageContainerConverterImpl imageContainerConverter = new ImageContainerConverterImpl();
+        return imageContainerConverter.setImageConverter(imageConverter());
+    }
+
+    private ImageConverter imageConverter() {
+        return new ImageConverterImpl();
+    }
+
+    public ArtistContainerConverter artistContainerConverter() {
+        ArtistContainerConverter artistContainerConverter = new ArtistContainerConverterImpl();
+        return artistContainerConverter.setArtistConverter(artistConverter());
+    }
+
+    private ArtistConverter artistConverter() {
+        return new ArtistConverterImpl();
+    }
 }
