@@ -6,6 +6,9 @@ import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseReposito
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTarget;
 import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
+import com.odeyalo.sonata.harmony.service.album.stage.AlbumReleaseUploadingStage;
+import com.odeyalo.sonata.harmony.service.album.stage.TracksUploadAlbumReleaseUploadingStage;
+import com.odeyalo.sonata.harmony.service.album.stage.UploadCoverImageAlbumReleaseUploadingStage;
 import com.odeyalo.sonata.harmony.service.album.support.MockAlbumCoverImageUploader;
 import com.odeyalo.sonata.harmony.service.album.support.MockAlbumTracksUploader;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -37,10 +41,12 @@ public class AlbumReleaseUploaderImplTest {
 
     @BeforeEach
     void setUp() {
+        List<AlbumReleaseUploadingStage> steps = List.of(
+                new UploadCoverImageAlbumReleaseUploadingStage(new MockAlbumCoverImageUploader(SAVED_IMAGE_URL)),
+                new TracksUploadAlbumReleaseUploadingStage(new MockAlbumTracksUploader(SAVED_TRACK_URL))
+        );
 
-        testable = new AlbumReleaseUploaderImpl(albumRepository,
-                new MockAlbumCoverImageUploader(SAVED_IMAGE_URL),
-                new MockAlbumTracksUploader(SAVED_TRACK_URL));
+        testable = new AlbumReleaseUploaderImpl(albumRepository, steps);
 
     }
 
