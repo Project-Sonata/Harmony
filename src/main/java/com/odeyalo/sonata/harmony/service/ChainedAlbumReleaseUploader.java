@@ -16,28 +16,19 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-public class AlbumReleaseUploaderImpl implements AlbumReleaseUploader {
+public class ChainedAlbumReleaseUploader implements AlbumReleaseUploader {
     private final AlbumReleaseRepository albumRepository;
     private final List<AlbumReleaseUploadingStage> steps;
     private final ArtistContainerEntityConverter artistContainerEntityConverter;
-    private final TrackConverter trackConverter;
-    private final ImageContainerConverter imageContainerConverter;
-    private final ArtistContainerConverter artistContainerConverter;
     private final AlbumReleaseConverter albumReleaseConverter;
 
-    public AlbumReleaseUploaderImpl(AlbumReleaseRepository albumRepository,
-                                    List<AlbumReleaseUploadingStage> steps,
-                                    ArtistContainerEntityConverter artistContainerEntityConverter,
-                                    TrackConverter trackConverter,
-                                    ImageContainerConverter imageContainerConverter,
-                                    ArtistContainerConverter artistContainerConverter,
-                                    AlbumReleaseConverter albumReleaseConverter) {
+    public ChainedAlbumReleaseUploader(AlbumReleaseRepository albumRepository,
+                                       List<AlbumReleaseUploadingStage> steps,
+                                       ArtistContainerEntityConverter artistContainerEntityConverter,
+                                       AlbumReleaseConverter albumReleaseConverter) {
         this.steps = steps;
         this.albumRepository = albumRepository;
         this.artistContainerEntityConverter = artistContainerEntityConverter;
-        this.trackConverter = trackConverter;
-        this.imageContainerConverter = imageContainerConverter;
-        this.artistContainerConverter = artistContainerConverter;
         this.albumReleaseConverter = albumReleaseConverter;
     }
 

@@ -31,7 +31,7 @@ import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AlbumReleaseUploaderImplTest {
+public class ChainedAlbumReleaseUploaderTest {
 
 
     static final String SAVED_IMAGE_URL = "https://cdn.sonata.com/i/image";
@@ -39,7 +39,7 @@ public class AlbumReleaseUploaderImplTest {
 
     AlbumReleaseRepository albumRepository = new InMemoryAlbumReleaseRepository();
 
-    AlbumReleaseUploaderImpl testable;
+    ChainedAlbumReleaseUploader testable;
 
     @BeforeEach
     void setUp() {
@@ -49,15 +49,10 @@ public class AlbumReleaseUploaderImplTest {
         );
 
         ArtistContainerEntityConverter artistContainerEntityConverter = new Converters().artistContainerEntityConverter();
-        TrackConverter trackConverter = new Converters().trackConverter();
-        ImageContainerConverter imageContainerConverter = new Converters().imageContainerConverter();
-        ArtistContainerConverter artistContainerConverter = new Converters().artistContainerConverter();
         AlbumReleaseConverter albumReleaseConverter = new Converters().albumReleaseConverter();
 
-        testable = new AlbumReleaseUploaderImpl(albumRepository, steps,
-                artistContainerEntityConverter, trackConverter, imageContainerConverter,
-                artistContainerConverter,
-                albumReleaseConverter);
+        testable = new ChainedAlbumReleaseUploader(albumRepository, steps,
+                artistContainerEntityConverter, albumReleaseConverter);
 
     }
 
