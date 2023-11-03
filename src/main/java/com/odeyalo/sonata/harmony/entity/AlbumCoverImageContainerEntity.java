@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,7 @@ import java.util.List;
 public class AlbumCoverImageContainerEntity implements Iterable<AlbumCoverImageEntity> {
     @NotNull
     @Singular
+    @Getter(value = AccessLevel.PRIVATE)
     List<AlbumCoverImageEntity> items;
 
     public static AlbumCoverImageContainerEntity of(List<AlbumCoverImageEntity> items) {
@@ -46,6 +48,10 @@ public class AlbumCoverImageContainerEntity implements Iterable<AlbumCoverImageE
 
     public AlbumCoverImageEntity get(int index) {
         return getItems().get(index);
+    }
+
+    public Stream<AlbumCoverImageEntity> stream() {
+        return getItems().stream();
     }
 
     @NotNull
