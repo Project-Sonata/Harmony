@@ -20,6 +20,7 @@ import testing.faker.TrackDtoFaker;
 
 import static com.odeyalo.sonata.harmony.dto.ReleaseArtistContainerDto.solo;
 import static com.odeyalo.sonata.harmony.dto.TrackContainerDto.single;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -42,6 +43,21 @@ public class UploadAlbumReleaseEndpointTest {
             WebTestClient.ResponseSpec responseSpec = sendRequestWithValidData();
 
             responseSpec.expectStatus().isAccepted();
+        }
+
+        @Test
+        void shouldReturnTrackingIdInBody() {
+            WebTestClient.ResponseSpec responseSpec = sendRequestWithValidData();
+
+            var responseBody = responseSpec.expectBody(AlbumReleaseUploadAcceptedResponse.class).returnResult().getResponseBody();
+
+            assertThat(responseBody).isNotNull();
+
+            String trackingId = responseBody.getTrackingId();
+
+            webTestClient.get().uri("/tracking/{trackingId}", trackingId)
+                    .exchange()
+                    .expectStatus().isOk();
         }
 
         @NotNull
