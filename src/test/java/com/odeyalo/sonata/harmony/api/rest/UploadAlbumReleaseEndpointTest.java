@@ -1,4 +1,4 @@
-package com.odeyalo.sonata.harmony.api;
+package com.odeyalo.sonata.harmony.api.rest;
 
 import com.odeyalo.sonata.harmony.dto.*;
 import com.odeyalo.sonata.harmony.model.AlbumType;
