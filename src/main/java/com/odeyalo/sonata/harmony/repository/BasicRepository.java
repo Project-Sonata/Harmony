@@ -13,11 +13,11 @@ public interface BasicRepository<T, ID> extends RemoveCapable<T, ID> {
 
     Flux<T> saveAll(Collection<T> flux);
 
-    Mono<T> findById(Long id);
+    Mono<T> findById(ID id);
 
     Flux<T> findAll();
 
-    Flux<T> findAllById(Flux<Long> ids);
+    Flux<T> findAllById(Flux<ID> ids);
 
-    Flux<T> findAllById(Collection<Long> ids);
+    Flux<T> findAllById(Collection<ID> ids);
 }
