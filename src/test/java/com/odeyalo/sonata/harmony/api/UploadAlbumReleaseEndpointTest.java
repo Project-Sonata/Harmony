@@ -20,6 +20,7 @@ import testing.faker.TrackDtoFaker;
 
 import static com.odeyalo.sonata.harmony.dto.ReleaseArtistContainerDto.solo;
 import static com.odeyalo.sonata.harmony.dto.TrackContainerDto.single;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -27,6 +28,7 @@ import static com.odeyalo.sonata.harmony.dto.TrackContainerDto.single;
 @ActiveProfiles("test")
 public class UploadAlbumReleaseEndpointTest {
 
+    public static final String TRACK_1_PATH = "./music/test.mp3";
     @Autowired
     WebTestClient webTestClient;
 
@@ -41,6 +43,21 @@ public class UploadAlbumReleaseEndpointTest {
             WebTestClient.ResponseSpec responseSpec = sendRequestWithValidData();
 
             responseSpec.expectStatus().isAccepted();
+        }
+
+        @Test
+        void shouldReturnTrackingIdInBody() {
+            WebTestClient.ResponseSpec responseSpec = sendRequestWithValidData();
+
+            var responseBody = responseSpec.expectBody(AlbumReleaseUploadAcceptedResponse.class).returnResult().getResponseBody();
+
+            assertThat(responseBody).isNotNull();
+
+            String trackingId = responseBody.getTrackingId();
+
+            webTestClient.get().uri("/tracking/{trackingId}", trackingId)
+                    .exchange()
+                    .expectStatus().isOk();
         }
 
         @NotNull
@@ -132,8 +149,13 @@ public class UploadAlbumReleaseEndpointTest {
 
         ClassPathResource albumCover = new ClassPathResource(ALBUM_COVER_PATH);
 
+        ClassPathResource track1 = new ClassPathResource(TRACK_1_PATH);
+
         builder.part("cover", BodyInserters.fromResource(albumCover))
                 .filename("hoshino.png");
+
+        builder.part("tracks", BodyInserters.fromResource(track1))
+                .filename("test.mp3");
 
         return builder;
     }

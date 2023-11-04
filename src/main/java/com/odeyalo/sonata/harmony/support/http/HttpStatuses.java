@@ -24,6 +24,14 @@ public final class HttpStatuses {
         return ResponseEntity.badRequest().build();
     }
 
+    public static <T> ResponseEntity<T> unprocessableEntity() {
+        return ResponseEntity.unprocessableEntity().build();
+    }
+
+    public static <T> ResponseEntity<T> unprocessableEntity(T body) {
+        return ResponseEntity.unprocessableEntity().body(body);
+    }
+
     public <T> ResponseEntity<T> badRequest(T body) {
         return ResponseEntity.badRequest().body(body);
     }
