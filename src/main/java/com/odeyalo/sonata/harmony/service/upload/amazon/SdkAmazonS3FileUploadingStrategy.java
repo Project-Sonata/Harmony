@@ -9,13 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.odeyalo.sonata.harmony.service.upload.amazon.AmazonS3FileUploadingStrategy.UploadResult.of;
 import static software.amazon.awssdk.core.async.AsyncRequestBody.fromPublisher;
@@ -43,38 +42,50 @@ public class SdkAmazonS3FileUploadingStrategy implements AmazonS3FileUploadingSt
 
         return bucketNameSupplierMono.flatMap(bucketNameSupplier -> {
 
-            CompletableFuture<PutObjectResponse> future = prepareAndSendRequestToS3(uploadTarget, s3FileKey, bucketNameSupplier.get());
+            Mono<PutObjectResponse> s3RequestSender = prepareAndSendRequestToS3(uploadTarget, s3FileKey, bucketNameSupplier.get());
 
-            return Mono.fromFuture(future)
-                    .map(response -> of(uploadTarget.getId(), s3FileKey, response));
+            return s3RequestSender
+                    .map(response -> of(uploadTarget.getId(), s3FileKey, response))
+                    .log();
         });
     }
 
-    @NotNull
-    private CompletableFuture<PutObjectResponse> prepareAndSendRequestToS3(@NotNull FileUploadTarget uploadTarget,
-                                                                           @NotNull String s3FileKey,
-                                                                           @NotNull String bucketName) {
+    private Mono<PutObjectResponse> prepareAndSendRequestToS3(@NotNull FileUploadTarget uploadTarget,
+                                                              @NotNull String s3FileKey,
+                                                              @NotNull String bucketName) {
 
-        PutObjectRequest request = preparePutObjectRequest(uploadTarget, s3FileKey, bucketName);
+        Mono<PutObjectRequest> requestMono = preparePutObjectRequest(uploadTarget, s3FileKey, bucketName);
 
         AsyncRequestBody content = prepareContent(uploadTarget);
 
-        return s3Client.putObject(request, content);
+        return requestMono.flatMap(requestBody -> Mono.fromFuture(s3Client.putObject(requestBody, content)));
     }
 
     @NotNull
-    private static PutObjectRequest preparePutObjectRequest(@NotNull FileUploadTarget uploadTarget,
-                                                            @NotNull String s3FileKey,
-                                                            @NotNull String bucketName) {
-        return PutObjectRequest.builder()
-                .key(s3FileKey)
-                .bucket(bucketName)
-                .contentLength(uploadTarget.getFilePart().headers().getContentLength())
-                .build();
+    private static Mono<PutObjectRequest> preparePutObjectRequest(@NotNull FileUploadTarget uploadTarget,
+                                                                  @NotNull String s3FileKey,
+                                                                  @NotNull String bucketName) {
+        /*
+        Spring does not provide content-length for single part
+        It loads the file in the memory, that can lead to out-of memory or memory leak.
+        Maybe there is another way to do this?
+        */
+        Flux<DataBuffer> content = uploadTarget.getFilePart().content();
+
+        return content.map(DataBuffer::readableByteCount)
+                .reduce(Integer::sum)
+                .log()
+                .map(contentLength -> PutObjectRequest.builder()
+                        .key(s3FileKey)
+                        .bucket(bucketName)
+                        .contentLength((long) contentLength)
+                        .contentType(uploadTarget.getFilePart().headers().getContentType().toString())
+                        .build());
     }
 
     @NotNull
     private static AsyncRequestBody prepareContent(FileUploadTarget uploadTarget) {
-        return fromPublisher(uploadTarget.getFilePart().content().map(DataBuffer::asByteBuffer));
+        return fromPublisher(uploadTarget.getFilePart().content()
+                .flatMapSequential(dataBuffer -> Flux.fromIterable(dataBuffer::readableByteBuffers)));
     }
 }
