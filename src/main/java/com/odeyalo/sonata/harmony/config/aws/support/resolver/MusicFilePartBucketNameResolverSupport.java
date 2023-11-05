@@ -5,8 +5,10 @@ import com.odeyalo.sonata.harmony.config.aws.support.MusicBucketNameSupplier;
 import com.odeyalo.sonata.harmony.support.utils.FilenameUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+@Component
 public class MusicFilePartBucketNameResolverSupport implements FilePartBucketNameResolverSupport {
     private final MusicBucketNameSupplier musicBucketNameSupplier;
 
