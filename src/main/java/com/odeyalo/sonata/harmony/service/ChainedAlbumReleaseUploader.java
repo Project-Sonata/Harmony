@@ -12,11 +12,13 @@ import com.odeyalo.sonata.harmony.service.album.stage.AlbumReleaseUploadingStage
 import com.odeyalo.sonata.harmony.support.converter.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Component
 public class ChainedAlbumReleaseUploader implements AlbumReleaseUploader {
     private final AlbumReleaseRepository albumRepository;
     private final List<AlbumReleaseUploadingStage> stages;
@@ -63,6 +65,7 @@ public class ChainedAlbumReleaseUploader implements AlbumReleaseUploader {
                 .releaseDate(info.getReleaseDate())
                 .albumType(info.getAlbumType())
                 .artists(artists)
+                .durationMs(10000L) // TODO: CHANGE ME
                 .images(AlbumCoverImageContainerEntity.empty())
                 .tracks(TrackContainerEntity.empty());
     }
