@@ -22,6 +22,10 @@ public class ReleaseArtistContainerDto implements Iterable<ReleaseArtistDto> {
     @Builder.Default
     List<ReleaseArtistDto> artists = Collections.emptyList();
 
+    public static ReleaseArtistContainerDto empty() {
+        return builder().build();
+    }
+
     public static ReleaseArtistContainerDto solo(ReleaseArtistDto artist) {
         return multiple(List.of(artist));
     }
