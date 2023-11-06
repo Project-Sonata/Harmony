@@ -52,7 +52,8 @@ class ArtistContainerConverterTest {
 
         assertThat(result).hasSize(2);
 
-        List<Artist> expected = container.getArtists().stream().map(artist -> sonataIdOnly(artist.getId())).toList();
+        List<Artist> expected = container.getArtists().stream()
+                .map(ArtistContainerConverterTest::toArtist).toList();
 
         assertThat(result).containsAll(expected);
     }
@@ -135,16 +136,17 @@ class ArtistContainerConverterTest {
         assertThat(result).isEmpty();
     }
 
+    private static Artist toArtist(ReleaseArtistDto artist) {
+        return Artist.builder().sonataId(artist.getId())
+                .name(artist.getArtistName()).build();
+    }
+
     private static ArtistContainerEntity getContainerWithMultipleArtistEntity() {
         ArtistEntity firstEntity = ArtistEntityFaker.create().get();
         ArtistEntity secondEntity = ArtistEntityFaker.create().get();
         return ArtistContainerEntity.multiple(firstEntity, secondEntity);
     }
 
-
-    private static Artist sonataIdOnly(String sonataId) {
-        return Artist.builder().sonataId(sonataId).build();
-    }
 
     private static ReleaseArtistContainerDto prepareContainerDtoWithMultipleArtists() {
         ReleaseArtistDto artist1 = ReleaseArtistDtoFaker.create().get();

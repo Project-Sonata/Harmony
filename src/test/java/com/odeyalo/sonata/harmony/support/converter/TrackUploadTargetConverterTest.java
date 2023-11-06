@@ -45,7 +45,7 @@ class TrackUploadTargetConverterTest {
     private static List<Artist> getExpectedArtists(TrackDto trackDto) {
         return trackDto.getArtists().getArtists()
                 .stream()
-                .map(dto -> Artist.builder().sonataId(dto.getId()).build())
+                .map(dto -> Artist.builder().sonataId(dto.getId()).name(dto.getArtistName()).build())
                 .toList();
     }
 }

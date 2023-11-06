@@ -91,7 +91,7 @@ class UploadAlbumReleaseInfoConverterTest {
         private List<Artist> getExpectedArtists(UploadAlbumReleaseRequest request) {
             return request.getPerformers().getArtists()
                     .stream()
-                    .map(dto -> Artist.builder().sonataId(dto.getId()).build())
+                    .map(dto -> Artist.builder().sonataId(dto.getId()).name(dto.getArtistName()).build())
                     .toList();
         }
     }
