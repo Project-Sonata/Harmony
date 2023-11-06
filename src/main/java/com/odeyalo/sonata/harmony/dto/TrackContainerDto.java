@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 
@@ -41,6 +42,10 @@ public class TrackContainerDto implements Iterable<TrackDto> {
 
     public TrackDto get(int index) {
         return items.get(index);
+    }
+
+    public Stream<TrackDto> stream() {
+        return items.stream();
     }
 
     @Override
