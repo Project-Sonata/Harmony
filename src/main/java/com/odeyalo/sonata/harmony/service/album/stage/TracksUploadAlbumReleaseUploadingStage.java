@@ -9,11 +9,13 @@ import com.odeyalo.sonata.harmony.service.album.support.AlbumTracksUploader;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Component
 public class TracksUploadAlbumReleaseUploadingStage implements AlbumReleaseUploadingStage {
     private final AlbumTracksUploader albumTracksUploader;
 
@@ -56,6 +58,7 @@ public class TracksUploadAlbumReleaseUploadingStage implements AlbumReleaseUploa
     }
 
 
+    // TODO: refactor me
     private static SimplifiedTrackEntity toSimplifiedTrack(ArtistContainerEntity artists, TrackUploadTarget trackUploadTarget, String url) {
         return SimplifiedTrackEntity.builder()
                 .name(trackUploadTarget.getTrackName())
