@@ -5,20 +5,19 @@ import com.odeyalo.sonata.harmony.repository.AlbumReleaseTrackingRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class InMemoryAlbumReleaseTrackingRepository implements AlbumReleaseTrackingRepository {
-    private final Map<String, AlbumReleaseTrackingEntity> store = new HashMap<>();
+    private final Map<Long, AlbumReleaseTrackingEntity> store = new HashMap<>();
+    private final AtomicLong idGenerator = new AtomicLong();
 
     @Override
     public Mono<AlbumReleaseTrackingEntity> save(AlbumReleaseTrackingEntity entity) {
-        if ( entity.getTrackingId() == null ) {
-            entity.setTrackingId(UUID.randomUUID().toString());
+        if ( entity.getId() == null ) {
+            entity.setId(idGenerator.incrementAndGet());
         }
-        store.put(entity.getTrackingId(), entity);
+        store.put(entity.getId(), entity);
         return Mono.just(entity);
     }
 
@@ -33,7 +32,7 @@ public class InMemoryAlbumReleaseTrackingRepository implements AlbumReleaseTrack
     }
 
     @Override
-    public Mono<AlbumReleaseTrackingEntity> findById(String id) {
+    public Mono<AlbumReleaseTrackingEntity> findById(Long id) {
         return Mono.justOrEmpty(store.get(id));
     }
 
@@ -43,17 +42,17 @@ public class InMemoryAlbumReleaseTrackingRepository implements AlbumReleaseTrack
     }
 
     @Override
-    public Flux<AlbumReleaseTrackingEntity> findAllById(Flux<String> ids) {
+    public Flux<AlbumReleaseTrackingEntity> findAllById(Flux<Long> ids) {
         return ids.flatMap(this::findById);
     }
 
     @Override
-    public Flux<AlbumReleaseTrackingEntity> findAllById(Collection<String> ids) {
+    public Flux<AlbumReleaseTrackingEntity> findAllById(Collection<Long> ids) {
         return Flux.fromIterable(ids).flatMap(this::findById);
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
+    public Mono<Void> deleteById(Long id) {
 
         store.remove(id);
 
@@ -64,5 +63,12 @@ public class InMemoryAlbumReleaseTrackingRepository implements AlbumReleaseTrack
     public Mono<Void> deleteAll() {
         store.clear();
         return Mono.empty();
+    }
+
+    @Override
+    public Mono<AlbumReleaseTrackingEntity> findByTrackingId(String trackingId) {
+        return Flux.fromIterable(store.values())
+                .filter(r -> Objects.equals(r.getTrackingId(), trackingId))
+                .next();
     }
 }

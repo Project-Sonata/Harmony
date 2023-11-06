@@ -8,13 +8,17 @@ import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import com.odeyalo.sonata.harmony.service.album.support.AlbumCoverImageUploader;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Component
 public class UploadCoverImageAlbumReleaseUploadingStage implements AlbumReleaseUploadingStage {
     private final AlbumCoverImageUploader albumCoverImageUploader;
 
+    @Autowired
     public UploadCoverImageAlbumReleaseUploadingStage(AlbumCoverImageUploader albumCoverImageUploader) {
         this.albumCoverImageUploader = albumCoverImageUploader;
     }

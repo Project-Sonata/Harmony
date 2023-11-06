@@ -35,7 +35,7 @@ public class R2dbcAlbumReleaseTrackingRepository implements AlbumReleaseTracking
     }
 
     @Override
-    public Mono<AlbumReleaseTrackingEntity> findById(String id) {
+    public Mono<AlbumReleaseTrackingEntity> findById(Long id) {
         return delegate.findById(id);
     }
 
@@ -45,22 +45,27 @@ public class R2dbcAlbumReleaseTrackingRepository implements AlbumReleaseTracking
     }
 
     @Override
-    public Flux<AlbumReleaseTrackingEntity> findAllById(Flux<String> ids) {
+    public Flux<AlbumReleaseTrackingEntity> findAllById(Flux<Long> ids) {
         return delegate.findAllById(ids);
     }
 
     @Override
-    public Flux<AlbumReleaseTrackingEntity> findAllById(Collection<String> ids) {
+    public Flux<AlbumReleaseTrackingEntity> findAllById(Collection<Long> ids) {
         return delegate.findAllById(ids);
     }
 
     @Override
-    public Mono<Void> deleteById(String id) {
+    public Mono<Void> deleteById(Long id) {
         return delegate.deleteById(id);
     }
 
     @Override
     public Mono<Void> deleteAll() {
         return delegate.deleteAll();
+    }
+
+    @Override
+    public Mono<AlbumReleaseTrackingEntity> findByTrackingId(String trackingId) {
+        return delegate.findByTrackingId(trackingId);
     }
 }

@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,8 +18,12 @@ import java.util.List;
 public class ReleaseArtistContainerDto implements Iterable<ReleaseArtistDto> {
     @NonNull
     @NotNull
-    @Builder.Default
-    List<ReleaseArtistDto> artists = Collections.emptyList();
+    @Singular
+    List<ReleaseArtistDto> artists;
+
+    public static ReleaseArtistContainerDto empty() {
+        return builder().build();
+    }
 
     public static ReleaseArtistContainerDto solo(ReleaseArtistDto artist) {
         return multiple(List.of(artist));

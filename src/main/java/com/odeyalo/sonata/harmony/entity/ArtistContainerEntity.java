@@ -19,14 +19,19 @@ public class ArtistContainerEntity implements Iterable<ArtistEntity> {
     @NotNull
     @NonNull
     @Getter(value = AccessLevel.PRIVATE)
+    @Singular
     List<ArtistEntity> artists;
+
+    public static ArtistContainerEntity empty() {
+        return builder().artists(emptyList()).build();
+    }
 
     public static ArtistContainerEntity solo(@NotNull ArtistEntity artist) {
         return multiple(List.of(artist));
     }
 
-    public static ArtistContainerEntity empty() {
-        return builder().artists(emptyList()).build();
+    public static ArtistContainerEntity multiple(ArtistEntity... artists) {
+        return multiple(List.of(artists));
     }
 
     public int size() {

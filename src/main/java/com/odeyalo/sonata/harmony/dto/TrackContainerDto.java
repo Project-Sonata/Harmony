@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
 
@@ -20,7 +21,6 @@ import static java.util.Collections.singletonList;
 public class TrackContainerDto implements Iterable<TrackDto> {
     int totalTracksCount;
     @Singular
-    @Getter(value = AccessLevel.NONE)
     List<TrackDto> items;
 
     public static TrackContainerDto single(TrackDto item) {
@@ -35,12 +35,16 @@ public class TrackContainerDto implements Iterable<TrackDto> {
         return items.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public boolean contains(TrackDto o) {
         return items.contains(o);
     }
 
     public TrackDto get(int index) {
         return items.get(index);
+    }
+
+    public Stream<TrackDto> stream() {
+        return items.stream();
     }
 
     @Override

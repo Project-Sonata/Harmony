@@ -16,4 +16,7 @@ public class ReleaseArtistDto {
     @NotNull
     @NonNull
     String id;
+    @NotNull
+    @NonNull
+    String artistName;
 }

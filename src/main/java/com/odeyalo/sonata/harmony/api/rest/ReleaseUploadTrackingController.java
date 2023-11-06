@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.api.rest;
 
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseTrackingRepository;
+import com.odeyalo.sonata.harmony.service.album.tracking.AlbumReleaseUploadTrackingService;
 import com.odeyalo.sonata.harmony.support.http.HttpStatuses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,16 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/tracking")
 public class ReleaseUploadTrackingController {
-    private final AlbumReleaseTrackingRepository trackingRepository;
+    private final AlbumReleaseUploadTrackingService trackingService;
 
     @Autowired
-    public ReleaseUploadTrackingController(AlbumReleaseTrackingRepository trackingRepository) {
-        this.trackingRepository = trackingRepository;
+    public ReleaseUploadTrackingController(AlbumReleaseUploadTrackingService trackingService) {
+        this.trackingService = trackingService;
     }
 
     @GetMapping("/{trackingId}")
     public Mono<ResponseEntity<Object>> getCurrentStatus(@PathVariable String trackingId) {
-        return trackingRepository.findById(trackingId)
+        return trackingService.findByTrackingId(trackingId)
                 .map(res -> HttpStatuses.ok())
                 .defaultIfEmpty(HttpStatuses.unprocessableEntity());
     }
