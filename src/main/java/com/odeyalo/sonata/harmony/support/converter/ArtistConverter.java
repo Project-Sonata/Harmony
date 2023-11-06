@@ -9,9 +9,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ArtistConverter {
 
+    @Mapping(target = "name", source = "name")
     Artist toArtist(ArtistEntity artist);
 
     @Mapping(target = "sonataId", source = "id")
+    @Mapping(target = "name", source = "artistName")
     Artist toArtist(ReleaseArtistDto artist);
 
 }

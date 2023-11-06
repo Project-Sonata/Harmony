@@ -32,12 +32,12 @@ class ArtistConverterTest {
 
     @Test
     void releaseArtistDtoToArtist() {
-        var artistDto = ReleaseArtistDto.of("iLoveMiku");
+        var artistDto = ReleaseArtistDto.of("iLoveMiku", "MikuWAIFU!");
 
         Artist artist = artistConverter.toArtist(artistDto);
 
         assertThat(artist).isNotNull();
-        assertThat(artist.getName()).isNull();
+        assertThat(artist.getName()).isEqualTo("MikuWAIFU!");
         assertThat(artist.getSonataId()).isEqualTo("iLoveMiku");
     }
 
