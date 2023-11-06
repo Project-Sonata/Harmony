@@ -20,4 +20,8 @@ public class TrackDto {
     int index;
     ReleaseArtistContainerDto artists;
     String fileId;
+
+    public boolean hasLyrics() {
+        return hasLyrics;
+    }
 }
