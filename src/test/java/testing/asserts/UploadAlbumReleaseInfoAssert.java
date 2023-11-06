@@ -1,6 +1,7 @@
 package testing.asserts;
 
 import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.assertj.core.api.AbstractAssert;
 
@@ -28,5 +29,19 @@ public class UploadAlbumReleaseInfoAssert extends AbstractAssert<UploadAlbumRele
             return this;
         }
         throw failureWithActualExpected(actual.getAlbumType(), expected, "Expected album type to be equal!");
+    }
+
+    public UploadAlbumReleaseInfoAssert hasReleaseDate(ReleaseDate expected) {
+        if ( Objects.equals(actual.getReleaseDate(), expected) ) {
+            return this;
+        }
+        throw failureWithActualExpected(actual.getReleaseDate(), expected, "Expected album release date to be equal!");
+    }
+
+    public UploadAlbumReleaseInfoAssert hasTotalTracksCount(int expected) {
+        if ( Objects.equals(actual.getTotalTracksCount(), expected) ) {
+            return this;
+        }
+        throw failureWithActualExpected(actual.getTotalTracksCount(), expected, "Expected total tracks count to be equal!");
     }
 }
