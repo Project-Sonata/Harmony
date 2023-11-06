@@ -3,10 +3,11 @@ package com.odeyalo.sonata.harmony.service.album.tracking;
 import com.odeyalo.sonata.harmony.config.Converters;
 import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseTrackingRepository;
+import com.odeyalo.sonata.harmony.support.converter.AlbumReleaseConverter;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
+import testing.faker.AlbumReleaseEntityFaker;
 import testing.faker.AlbumReleaseFaker;
 
 import java.util.Objects;
@@ -17,11 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DefaultAlbumReleaseUploadTrackingServiceTest {
     InMemoryAlbumReleaseTrackingRepository trackingRepository = new InMemoryAlbumReleaseTrackingRepository();
     InMemoryAlbumReleaseRepository albumReleaseRepository = new InMemoryAlbumReleaseRepository();
+    AlbumReleaseConverter albumReleaseConverter = new Converters().albumReleaseConverter();
 
     DefaultAlbumReleaseUploadTrackingService testable = new DefaultAlbumReleaseUploadTrackingService(
             trackingRepository,
             albumReleaseRepository,
-            new Converters().albumReleaseConverter()
+            albumReleaseConverter
     );
 
     @AfterEach
@@ -66,9 +68,12 @@ class DefaultAlbumReleaseUploadTrackingServiceTest {
     }
 
     @Test
-    @Disabled("Disabled because I need to save it to DB by converting is ugly. Will do it later")
     void shouldFindByExistingId() {
-        var albumRelease = AlbumReleaseFaker.create().id(10L).get();
+        var albumReleaseEntity = AlbumReleaseEntityFaker.create().id(10).get();
+        var albumRelease = albumReleaseConverter.toAlbumRelease(albumReleaseEntity);
+
+        albumReleaseRepository.save(albumReleaseEntity).block();
+
 
         TrackingInfo result = testable.startTracking(albumRelease, VERIFICATION_REQUIRED).block();
 
