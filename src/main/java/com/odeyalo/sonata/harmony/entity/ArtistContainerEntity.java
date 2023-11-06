@@ -19,6 +19,7 @@ public class ArtistContainerEntity implements Iterable<ArtistEntity> {
     @NotNull
     @NonNull
     @Getter(value = AccessLevel.PRIVATE)
+    @Singular
     List<ArtistEntity> artists;
 
     public static ArtistContainerEntity empty() {
