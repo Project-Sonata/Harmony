@@ -2,8 +2,6 @@ package com.odeyalo.sonata.harmony.support.converter;
 
 import com.odeyalo.sonata.harmony.dto.UploadAlbumReleaseRequest;
 import com.odeyalo.sonata.harmony.model.Artist;
-import com.odeyalo.sonata.harmony.model.Track;
-import com.odeyalo.sonata.harmony.service.album.TrackUploadTargetContainer;
 import com.odeyalo.sonata.harmony.service.album.UploadAlbumReleaseInfo;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +47,15 @@ class UploadAlbumReleaseInfoConverterTest {
         }
 
         @Test
+        void shouldConvertTotalTracksCount() {
+            var request = UploadAlbumReleaseRequestFaker.create().get();
+
+            UploadAlbumReleaseInfo result = testable.toUploadAlbumReleaseInfo(request);
+
+            assertThat(result).hasTotalTracksCount(request.getTracks().getTotalTracksCount());
+        }
+
+        @Test
         void shouldParseAlbumPerformers() {
             var request = UploadAlbumReleaseRequestFaker.create().get();
 
@@ -58,6 +65,16 @@ class UploadAlbumReleaseInfoConverterTest {
 
             ArtistContainerAssert.assertThat(result.getArtists())
                     .containsAll(expectedArtists);
+        }
+
+        @Test
+        void shouldParseReleaseDate() {
+            var request = UploadAlbumReleaseRequestFaker.create().get();
+
+            UploadAlbumReleaseInfo result = testable.toUploadAlbumReleaseInfo(request);
+
+            assertThat(result)
+                    .hasReleaseDate(request.getReleaseDate());
         }
 
         @Test
