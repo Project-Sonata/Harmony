@@ -11,7 +11,8 @@ public class ReleaseArtistDtoFaker {
     ReleaseArtistDto.ReleaseArtistDtoBuilder builder = ReleaseArtistDto.builder();
 
     public ReleaseArtistDtoFaker() {
-        builder.id(RandomStringUtils.randomAlphanumeric(22));
+        builder.id(RandomStringUtils.randomAlphanumeric(22))
+                .artistName(RandomStringUtils.randomAlphanumeric(10));
     }
 
     public static ReleaseArtistDtoFaker create() {
@@ -28,4 +29,10 @@ public class ReleaseArtistDtoFaker {
         builder.id(id);
         return this;
     }
+
+    public ReleaseArtistDtoFaker artistName(@NotNull String name) {
+        builder.artistName(name);
+        return this;
+    }
+
 }

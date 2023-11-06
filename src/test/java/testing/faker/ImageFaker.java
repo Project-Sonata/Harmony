@@ -1,4 +1,4 @@
-package testing.asserts;
+package testing.faker;
 
 import com.github.javafaker.Faker;
 import com.odeyalo.sonata.harmony.model.Image;

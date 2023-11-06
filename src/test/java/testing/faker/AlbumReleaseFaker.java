@@ -1,11 +1,11 @@
-package testing.asserts;
+package testing.faker;
 
 import com.github.javafaker.Faker;
 import com.odeyalo.sonata.harmony.model.*;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-import static testing.asserts.ReleaseDateFaker.randomReleaseDate;
+import static testing.faker.ReleaseDateFaker.randomReleaseDate;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AlbumReleaseFaker {

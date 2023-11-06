@@ -1,7 +1,6 @@
-package testing.asserts;
+package testing.faker;
 
 import com.github.javafaker.Faker;
-import com.odeyalo.sonata.harmony.model.ArtistContainer;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import com.odeyalo.sonata.harmony.model.ReleaseDate.Precision;
 import lombok.AccessLevel;
