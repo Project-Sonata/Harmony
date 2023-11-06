@@ -1,8 +1,13 @@
 package com.odeyalo.sonata.harmony.api.rest;
 
+import com.odeyalo.sonata.harmony.api.rest.UploadAlbumReleaseEndpointTest.Config;
 import com.odeyalo.sonata.harmony.dto.*;
-import com.odeyalo.sonata.harmony.model.AlbumType;
+import com.odeyalo.sonata.harmony.service.upload.DelegatingFileUploader;
+import com.odeyalo.sonata.harmony.service.upload.FileUploader;
+import com.odeyalo.sonata.harmony.service.upload.FileUrl;
+import com.odeyalo.sonata.harmony.service.upload.MockFileUploaderDelegate;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -10,13 +15,20 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import testing.faker.ReleaseArtistDtoFaker;
 import testing.faker.TrackDtoFaker;
+import testing.faker.UploadAlbumReleaseRequestFaker;
+import testing.spring.config.AutoconfigureQaEnvironment;
+import testing.qa.QaOperations;
 
 import static com.odeyalo.sonata.harmony.dto.ReleaseArtistContainerDto.solo;
 import static com.odeyalo.sonata.harmony.dto.TrackContainerDto.single;
@@ -26,13 +38,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(Lifecycle.PER_CLASS)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
+@Import(Config.class)
+@AutoconfigureQaEnvironment
 public class UploadAlbumReleaseEndpointTest {
 
-    public static final String TRACK_1_PATH = "./music/test.mp3";
     @Autowired
     WebTestClient webTestClient;
 
+    @Autowired
+    QaOperations qaOperations;
+
     static final String ALBUM_COVER_PATH = "./img/album-cover.png";
+    static final String TRACK_1_NAME = "test.mp3";
+    static final String TRACK_1_PATH = "./music/" + TRACK_1_NAME;
+
+    @AfterEach
+    void tearDown() {
+        qaOperations.clearEverything();
+    }
 
     @Nested
     @TestInstance(Lifecycle.PER_CLASS)
@@ -129,16 +152,13 @@ public class UploadAlbumReleaseEndpointTest {
     }
 
     private static UploadAlbumReleaseRequest.UploadAlbumReleaseRequestBuilder prepareValidCustomizableRequestBody() {
-        ReleaseArtistContainerDto artistContainer = solo(ReleaseArtistDto.of("123"));
-        TrackDto track = TrackDtoFaker.create().get();
+        ReleaseArtistContainerDto artistContainer = solo(ReleaseArtistDtoFaker.create().get());
+        TrackDto track = TrackDtoFaker.create().artists(artistContainer).fileId(TRACK_1_NAME).get();
 
         TrackContainerDto container = single(track);
 
-        return UploadAlbumReleaseRequest.builder()
-                .albumName("something")
-                .albumType(AlbumType.SINGLE)
-                .performers(artistContainer)
-                .tracks(container);
+        return UploadAlbumReleaseRequestFaker.create().performers(artistContainer)
+                .tracks(container).get().toBuilder();
     }
 
     @NotNull
@@ -155,7 +175,7 @@ public class UploadAlbumReleaseEndpointTest {
                 .filename("hoshino.png");
 
         builder.part("tracks", BodyInserters.fromResource(track1))
-                .filename("test.mp3");
+                .filename(TRACK_1_NAME);
 
         return builder;
     }
@@ -166,5 +186,16 @@ public class UploadAlbumReleaseEndpointTest {
                 .uri("/release/upload/album")
                 .body(BodyInserters.fromMultipartData(builder.build()))
                 .exchange();
+    }
+
+
+    @TestConfiguration
+    static class Config {
+        @Bean
+        public FileUploader fileUploader() {
+            return new DelegatingFileUploader(new MockFileUploaderDelegate(
+                    FileUrl.urlOnly("https://cdn.sonata.com/i/image")
+            ));
+        }
     }
 }
