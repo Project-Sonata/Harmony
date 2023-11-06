@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import static testing.asserts.ReleaseDateFaker.randomReleaseDate;
 import static testing.faker.ReleaseArtistContainerDtoFaker.randomReleaseArtistsDto;
 import static testing.faker.TrackContainerDtoFaker.randomTracksDto;
 
@@ -23,7 +24,9 @@ public class UploadAlbumReleaseRequestFaker {
         builder.albumName(faker.funnyName().name())
                 .albumType(faker.options().option(AlbumType.class))
                 .tracks(randomTracksDto().get())
-                .performers(randomReleaseArtistsDto().get());
+                .performers(randomReleaseArtistsDto().get())
+                .releaseDate(randomReleaseDate().get());
+
     }
 
 
