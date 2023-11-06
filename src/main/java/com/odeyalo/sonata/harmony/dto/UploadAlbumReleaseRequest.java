@@ -1,16 +1,13 @@
 package com.odeyalo.sonata.harmony.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor(staticName = "of")
@@ -26,6 +23,7 @@ public class UploadAlbumReleaseRequest {
     @NotNull
     ReleaseDate releaseDate;
     @NotNull
+    @JsonUnwrapped
     ReleaseArtistContainerDto performers;
     @NotNull
     TrackContainerDto tracks;
