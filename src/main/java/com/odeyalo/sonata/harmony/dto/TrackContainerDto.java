@@ -36,7 +36,7 @@ public class TrackContainerDto implements Iterable<TrackDto> {
         return items.isEmpty();
     }
 
-    public boolean contains(Object o) {
+    public boolean contains(TrackDto o) {
         return items.contains(o);
     }
 
