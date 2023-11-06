@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-import static testing.asserts.ReleaseDateFaker.randomReleaseDate;
+import static testing.faker.ReleaseDateFaker.randomReleaseDate;
 import static testing.faker.ReleaseArtistContainerDtoFaker.randomReleaseArtistsDto;
 import static testing.faker.TrackContainerDtoFaker.randomTracksDto;
 

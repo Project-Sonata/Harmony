@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
-import testing.asserts.AlbumReleaseFaker;
+import testing.faker.AlbumReleaseFaker;
 
 import java.util.Objects;
 
