@@ -28,12 +28,6 @@ public class UploadReleaseController {
         this.albumReleaseUploaderFacade = albumReleaseUploaderFacade;
     }
 
-    @PostMapping("/test")
-    public Mono<ResponseEntity<?>> test(@RequestBody UploadAlbumReleaseRequest body) {
-
-        return Mono.just(ResponseEntity.ok(body));
-    }
-
     @PostMapping("/album")
     public Mono<ResponseEntity<AlbumReleaseUploadAcceptedResponse>> uploadAlbum(
             @Validated @RequestPart("body") UploadAlbumReleaseRequest body,
