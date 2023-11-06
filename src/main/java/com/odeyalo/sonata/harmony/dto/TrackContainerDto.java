@@ -21,7 +21,6 @@ import static java.util.Collections.singletonList;
 public class TrackContainerDto implements Iterable<TrackDto> {
     int totalTracksCount;
     @Singular
-    @Getter(value = AccessLevel.NONE)
     List<TrackDto> items;
 
     public static TrackContainerDto single(TrackDto item) {
