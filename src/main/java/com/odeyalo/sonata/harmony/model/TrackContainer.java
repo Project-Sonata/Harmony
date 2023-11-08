@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Value
 @Builder
@@ -43,6 +44,10 @@ public class TrackContainer implements Iterable<Track> {
 
     public Track get(int index) {
         return items.get(index);
+    }
+
+    public Stream<Track> stream() {
+        return items.stream();
     }
 
     @NotNull
