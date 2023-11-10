@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.config;
 
 import com.odeyalo.sonata.harmony.support.converter.*;
+import com.odeyalo.sonata.harmony.support.converter.external.*;
 
 public class Converters {
 
@@ -43,5 +44,25 @@ public class Converters {
 
     public AlbumReleaseConverter albumReleaseConverter() {
         return new AlbumReleaseConverterImpl(imageContainerConverter(), artistContainerConverter(), trackContainerConverter());
+    }
+
+    public UploadedAlbumInfoDtoConverter uploadedAlbumInfoDtoConverter() {
+        return new UploadedAlbumInfoDtoConverterImpl(
+               artistContainerDtoConverter(), simplifiedTrackDtoContainerConverter()
+        );
+    }
+
+    public SimplifiedTrackDtoContainerConverter simplifiedTrackDtoContainerConverter() {
+        var converter = new SimplifiedTrackDtoContainerConverterImpl();
+        converter.setTrackDtoConverter(simplifiedTrackDtoConverter());
+        return converter;
+    }
+
+    public SimplifiedTrackDtoConverter simplifiedTrackDtoConverter() {
+        return new SimplifiedTrackDtoConverterImpl(artistContainerDtoConverter());
+    }
+
+    public ArtistContainerDtoConverter artistContainerDtoConverter() {
+        return new ArtistContainerDtoConverterImpl();
     }
 }

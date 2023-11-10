@@ -23,7 +23,6 @@ public class UploadAlbumReleaseRequest {
     @NotNull
     ReleaseDate releaseDate;
     @NotNull
-    @JsonUnwrapped
     ReleaseArtistContainerDto performers;
     @NotNull
     TrackContainerDto tracks;
