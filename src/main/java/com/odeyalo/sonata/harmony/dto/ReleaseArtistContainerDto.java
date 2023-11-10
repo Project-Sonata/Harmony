@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.dto;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
@@ -19,6 +20,7 @@ public class ReleaseArtistContainerDto implements Iterable<ReleaseArtistDto> {
     @NonNull
     @NotNull
     @Singular
+    @JsonUnwrapped
     List<ReleaseArtistDto> artists;
 
     public static ReleaseArtistContainerDto empty() {

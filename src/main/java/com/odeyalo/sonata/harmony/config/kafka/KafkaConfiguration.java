@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.config.kafka;
 
+import com.odeyalo.sonata.suite.brokers.events.SonataEvent;
 import com.odeyalo.sonata.suite.brokers.events.album.data.AlbumFullyUploadedInfo;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -16,14 +17,14 @@ import java.util.Map;
 public class KafkaConfiguration {
 
     @Bean
-    public ReactiveKafkaProducerTemplate<String, AlbumFullyUploadedInfo> kafkaSender() {
+    public ReactiveKafkaProducerTemplate<String, SonataEvent> kafkaSender() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:29092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
-        SenderOptions<String, AlbumFullyUploadedInfo> senderOptions =
-                SenderOptions.<String, AlbumFullyUploadedInfo>create(props)
+        SenderOptions<String, SonataEvent> senderOptions =
+                SenderOptions.<String, SonataEvent>create(props)
                         .maxInFlight(1024);
 
         return new ReactiveKafkaProducerTemplate<>(senderOptions);
