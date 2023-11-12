@@ -8,16 +8,23 @@ import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import testing.spring.web.FilePartStub;
 
+import java.util.List;
+
 import static org.apache.commons.lang3.StringUtils.startsWith;
 
 class ChainAmazonS3FileKeyGeneratorTest {
     private static final String GENERATED_FILE_KEY_IMAGE_PREFIX = "i/";
     private static final String GENERATED_FILE_KEY_MUSIC_PREFIX = "m/";
 
+    List<AmazonS3FileKeyGeneratorSupport<FileUploadTarget>> DEFAULT_GENERATORS = List.of(
+            new ImageFileAmazonS3FileKeyGeneratorSupport(),
+            new MusicFileAmazonS3FileKeyGeneratorSupport()
+    );
+
     @Test
     void shouldGenerateFileKeyWithImagePrefixIfImageFileIsUsed() {
         // given
-        var testable = new ChainAmazonS3FileKeyGenerator<FileUploadTarget>();
+        var testable = new ChainAmazonS3FileKeyGenerator<>(DEFAULT_GENERATORS);
 
         FileUploadTarget uploadTarget = createImageFileUploadTarget();
         // when-then
@@ -30,7 +37,7 @@ class ChainAmazonS3FileKeyGeneratorTest {
     @Test
     void shouldGenerateFileKeyWithMusicPrefixIfMusicFileIsUsed() {
         // given
-        var testable = new ChainAmazonS3FileKeyGenerator<FileUploadTarget>();
+        var testable = new ChainAmazonS3FileKeyGenerator<>(DEFAULT_GENERATORS);
 
         FileUploadTarget uploadTarget = createTrackFileUploadTarget();
         // when-then
@@ -43,7 +50,7 @@ class ChainAmazonS3FileKeyGeneratorTest {
     @Test
     void shouldReturnExceptionIfFileIsNotRecognizable() {
         // given
-        var testable = new ChainAmazonS3FileKeyGenerator<FileUploadTarget>();
+        var testable = new ChainAmazonS3FileKeyGenerator<>(DEFAULT_GENERATORS);
 
         FileUploadTarget uploadTarget = createUnrecognizableFileUploadTarget();
         // when-then
