@@ -3,7 +3,6 @@ package com.odeyalo.sonata.harmony.service.upload.amazon;
 import com.odeyalo.sonata.harmony.config.aws.support.BucketNameSupplier;
 import com.odeyalo.sonata.harmony.config.aws.support.resolver.BucketNameResolver;
 import com.odeyalo.sonata.harmony.service.upload.FileUploadTarget;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -25,29 +24,36 @@ import static software.amazon.awssdk.core.async.AsyncRequestBody.fromPublisher;
 @Component
 public class SdkAmazonS3FileUploadingStrategy implements AmazonS3FileUploadingStrategy {
     private final S3AsyncClient s3Client;
+    private final AmazonS3FileKeyGenerator<FileUploadTarget> fileKeyGenerator;
     private final BucketNameResolver<FilePart> bucketNameResolver;
 
     @Autowired
     public SdkAmazonS3FileUploadingStrategy(S3AsyncClient s3Client,
+                                            AmazonS3FileKeyGenerator<FileUploadTarget> fileKeyGenerator,
                                             BucketNameResolver<FilePart> bucketNameResolver) {
         this.s3Client = s3Client;
+        this.fileKeyGenerator = fileKeyGenerator;
         this.bucketNameResolver = bucketNameResolver;
     }
 
     @Override
     public Mono<UploadResult> uploadFile(FileUploadTarget uploadTarget) {
-        String s3FileKey = RandomStringUtils.randomAlphanumeric(50);
+        Mono<String> s3FileKeyMono = fileKeyGenerator.generateFileKey(uploadTarget);
 
         Mono<BucketNameSupplier> bucketNameSupplierMono = bucketNameResolver.resolveBucketName(uploadTarget.getFilePart());
 
-        return bucketNameSupplierMono.flatMap(bucketNameSupplier -> {
+        return bucketNameSupplierMono.zipWith(s3FileKeyMono)
+                .flatMap(bucketNameWithFileKeyTuple -> {
 
-            Mono<PutObjectResponse> s3RequestSender = prepareAndSendRequestToS3(uploadTarget, s3FileKey, bucketNameSupplier.get());
+                    BucketNameSupplier bucketNameSupplier = bucketNameWithFileKeyTuple.getT1();
+                    String fileKey = bucketNameWithFileKeyTuple.getT2();
 
-            return s3RequestSender
-                    .map(response -> of(uploadTarget.getId(), s3FileKey, response))
-                    .log();
-        });
+                    Mono<PutObjectResponse> s3RequestSender = prepareAndSendRequestToS3(uploadTarget, fileKey, bucketNameSupplier.get());
+
+                    return s3RequestSender
+                            .map(response -> of(uploadTarget.getId(), fileKey, response))
+                            .log();
+                });
     }
 
     private Mono<PutObjectResponse> prepareAndSendRequestToS3(@NotNull FileUploadTarget uploadTarget,
@@ -79,7 +85,7 @@ public class SdkAmazonS3FileUploadingStrategy implements AmazonS3FileUploadingSt
                         .key(s3FileKey)
                         .bucket(bucketName)
                         .contentLength((long) contentLength)
-                        .contentType(uploadTarget.getFilePart().headers().getContentType().toString())
+                        .contentType(String.valueOf(uploadTarget.getFilePart().headers().getContentType()))
                         .build());
     }
 
