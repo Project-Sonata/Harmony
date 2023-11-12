@@ -4,6 +4,7 @@ import com.odeyalo.sonata.harmony.exception.AmazonS3FileKeyGenerationException;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +21,7 @@ public class ChainAmazonS3FileKeyGenerator<T> implements AmazonS3FileKeyGenerato
 
     @Autowired
     public ChainAmazonS3FileKeyGenerator(List<AmazonS3FileKeyGeneratorSupport<T>> generators) {
+        Assert.notEmpty(generators, "List must contain at least one element!");
         this.generators = generators;
     }
 
