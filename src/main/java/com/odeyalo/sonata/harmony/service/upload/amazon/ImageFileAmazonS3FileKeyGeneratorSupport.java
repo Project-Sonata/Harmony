@@ -5,11 +5,13 @@ import com.odeyalo.sonata.harmony.support.utils.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 /**
  * Support only image files and generate keys for them only
  */
+@Component
 public class ImageFileAmazonS3FileKeyGeneratorSupport implements AmazonS3FileKeyGeneratorSupport<FileUploadTarget> {
     public static final String IMAGE_FILE_S3_PREFIX = "i/";
 
