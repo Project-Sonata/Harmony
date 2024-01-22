@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
  * @param <T> - type of the event to publish
  */
 @Log4j2
-public class AbstractEventPublisher<T extends SonataEvent> implements EventPublisher<T> {
+public abstract class AbstractEventPublisher<T extends SonataEvent> implements EventPublisher<T> {
     private final EventPublisherDelegate eventPublisherDelegate;
 
     public AbstractEventPublisher(EventPublisherDelegate eventPublisherDelegate) {
