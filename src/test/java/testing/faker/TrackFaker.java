@@ -17,7 +17,9 @@ public class TrackFaker {
     Faker faker = Faker.instance();
 
     public TrackFaker(int index, int discNumber) {
-        builder.index(index)
+        builder
+                .id(UUID.randomUUID().toString())
+                .index(index)
                 .discNumber(discNumber)
                 .trackName(faker.funnyName().name())
                 .artists(ArtistContainerFaker.create().get())
