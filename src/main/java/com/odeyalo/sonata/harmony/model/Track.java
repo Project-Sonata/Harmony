@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
+import java.net.URI;
+
 @Value
 @AllArgsConstructor(staticName = "of")
 @Builder(toBuilder = true)
@@ -15,6 +17,7 @@ public class Track {
     boolean hasLyrics;
     int discNumber;
     int index;
+    URI trackUrl;
     ArtistContainer artists;
     SimplifiedAlbumRelease album;
 
