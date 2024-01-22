@@ -16,6 +16,7 @@ public interface TrackConverter {
 
     @Mapping(source = "hasLyrics", target = "hasLyrics")
     @Mapping(source = "name", target = "trackName")
+    @Mapping(expression = "java( java.net.URI.create(entity.getTrackUrl()))", target = "trackUrl")
     Track toTrack(SimplifiedTrackEntity entity);
 
     default Track toTrack(SimplifiedTrackEntity entity, SimplifiedAlbumRelease album) {

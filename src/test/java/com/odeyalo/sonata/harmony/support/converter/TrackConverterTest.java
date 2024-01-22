@@ -14,12 +14,15 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import testing.spring.MapStructBeansBootstrapConfiguration;
 
+import java.net.URI;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @Import(MapStructBeansBootstrapConfiguration.class)
 class TrackConverterTest {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     TrackConverter trackConverter;
 
@@ -50,6 +53,7 @@ class TrackConverterTest {
         assertThat(result.getDurationMs()).isEqualTo(expected.getDurationMs());
         assertThat(result.isExplicit()).isEqualTo(expected.isExplicit());
         assertThat(result.hasLyrics()).isEqualTo(expected.hasLyrics());
+        assertThat(result.getTrackUrl()).isEqualTo(URI.create(expected.getTrackUrl()));
     }
 
     private static TrackEntity createTrackEntity() {
@@ -61,6 +65,7 @@ class TrackConverterTest {
                 .artists(ArtistContainerEntity.solo(ArtistEntity.of(1L, "id", "corn wave")))
                 .discNumber(1)
                 .durationMs(1488L)
+                .trackUrl("http://localhost:3000/track/123")
                 .build();
     }
 

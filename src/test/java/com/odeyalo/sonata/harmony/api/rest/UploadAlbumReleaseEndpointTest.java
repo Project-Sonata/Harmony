@@ -6,24 +6,33 @@ import com.odeyalo.sonata.harmony.service.upload.DelegatingFileUploader;
 import com.odeyalo.sonata.harmony.service.upload.FileUploader;
 import com.odeyalo.sonata.harmony.service.upload.FileUrl;
 import com.odeyalo.sonata.harmony.service.upload.MockFileUploaderDelegate;
+import com.odeyalo.sonata.harmony.support.kafka.ReactiveKafkaProducer;
+import com.odeyalo.sonata.harmony.support.kafka.TemplateDelegateReactiveKafkaProducer;
+import com.odeyalo.sonata.suite.brokers.events.SonataEvent;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
+import org.springframework.messaging.Message;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import reactor.core.publisher.Mono;
+import reactor.kafka.sender.SenderResult;
 import testing.faker.ReleaseArtistDtoFaker;
 import testing.faker.TrackDtoFaker;
 import testing.faker.UploadAlbumReleaseRequestFaker;
@@ -33,6 +42,7 @@ import testing.qa.QaOperations;
 import static com.odeyalo.sonata.harmony.dto.ReleaseArtistContainerDto.solo;
 import static com.odeyalo.sonata.harmony.dto.TrackContainerDto.single;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
@@ -197,5 +207,17 @@ public class UploadAlbumReleaseEndpointTest {
                     FileUrl.urlOnly("https://cdn.sonata.com/i/image")
             ));
         }
+
+        @Bean
+        @Primary
+        public ReactiveKafkaProducer<?, ?> testingReactiveKafkaProducer() {
+            ReactiveKafkaProducerTemplate<?, SonataEvent> producerTemplate = Mockito.mock(ReactiveKafkaProducerTemplate.class);
+            Mockito.when(producerTemplate.send(any(), (SonataEvent) any())).thenReturn(Mono.empty());
+
+            return new TemplateDelegateReactiveKafkaProducer<>(
+                    producerTemplate
+            );
+        }
+
     }
 }

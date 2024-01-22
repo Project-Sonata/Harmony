@@ -6,6 +6,8 @@ import com.odeyalo.sonata.harmony.entity.SimplifiedTrackEntity;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SimplifiedTrackEntityFaker {
     public static final int FIRST_TRACK_INDEX = 0;
@@ -21,6 +23,7 @@ public class SimplifiedTrackEntityFaker {
                 .artists(artists)
                 .hasLyrics(faker.random().nextBoolean())
                 .explicit(faker.random().nextBoolean())
+                .trackUrl("https://s3.aws.com/odeyalo/tracks/" + UUID.randomUUID())
                 .durationMs(Long.valueOf(faker.random().nextInt(1000, 100_000)));
     }
 

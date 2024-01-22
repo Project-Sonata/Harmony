@@ -7,6 +7,9 @@ import com.odeyalo.sonata.harmony.model.Track;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import java.net.URI;
+import java.util.UUID;
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TrackFaker {
     Track.TrackBuilder builder = Track.builder();
@@ -14,13 +17,16 @@ public class TrackFaker {
     Faker faker = Faker.instance();
 
     public TrackFaker(int index, int discNumber) {
-        builder.index(index)
+        builder
+                .id(UUID.randomUUID().toString())
+                .index(index)
                 .discNumber(discNumber)
                 .trackName(faker.funnyName().name())
                 .artists(ArtistContainerFaker.create().get())
                 .hasLyrics(faker.random().nextBoolean())
                 .isExplicit(faker.random().nextBoolean())
-                .durationMs(faker.random().nextInt(1000, 100_000));
+                .durationMs(faker.random().nextInt(1000, 100_000))
+                .trackUrl(URI.create("https://s3.aws.com/tracks/" + UUID.randomUUID()));
     }
 
     public static TrackFaker create() {
