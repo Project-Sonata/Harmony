@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(MapStructBeansBootstrapConfiguration.class)
 class TrackUploadTargetConverterTest {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     TrackUploadTargetConverter testable;
 
@@ -32,7 +33,6 @@ class TrackUploadTargetConverterTest {
         assertThat(result).isNotNull();
         assertThat(result.getTrackName()).isEqualTo(trackDto.getTrackName());
         assertThat(result.getFileId()).isEqualTo(trackDto.getFileId());
-        assertThat(result.getDurationMs()).isEqualTo(trackDto.getDurationMs());
         assertThat(result.getDiscNumber()).isEqualTo(trackDto.getDiscNumber());
         assertThat(result.getIndex()).isEqualTo(trackDto.getIndex());
 

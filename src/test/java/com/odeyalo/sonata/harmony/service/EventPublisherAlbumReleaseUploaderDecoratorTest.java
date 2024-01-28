@@ -17,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import testing.faker.AlbumReleaseFaker;
-import testing.faker.ImageContainerFaker;
 import testing.faker.ImageFaker;
 import testing.spring.MapStructBeansBootstrapConfiguration;
 import testing.spring.web.FilePartStub;
@@ -74,7 +73,6 @@ class EventPublisherAlbumReleaseUploaderDecoratorTest {
         TrackUploadTargetContainer tracks = TrackUploadTargetContainer.builder()
                 .item(TrackUploadTarget.builder()
                         .trackName("dudeness")
-                        .durationMs(1000L)
                         .isExplicit(true)
                         .hasLyrics(true)
                         .fileId("track.mp3")

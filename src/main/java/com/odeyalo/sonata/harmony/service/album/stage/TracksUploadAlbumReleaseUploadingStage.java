@@ -63,7 +63,6 @@ public class TracksUploadAlbumReleaseUploadingStage implements AlbumReleaseUploa
         return SimplifiedTrackEntity.builder()
                 .name(trackUploadTarget.getTrackName())
                 .artists(artists)
-                .durationMs(trackUploadTarget.getDurationMs())
                 .discNumber(trackUploadTarget.getDiscNumber())
                 .index(trackUploadTarget.getIndex())
                 .explicit(trackUploadTarget.isExplicit())

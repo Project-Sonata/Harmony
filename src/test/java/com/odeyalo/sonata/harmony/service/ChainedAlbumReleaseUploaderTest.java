@@ -203,7 +203,6 @@ public class ChainedAlbumReleaseUploaderTest {
 
         assertThat(foundTrack.getIndex()).isEqualTo(track.getIndex());
         assertThat(foundTrack.getDiscNumber()).isEqualTo(track.getDiscNumber());
-        assertThat(foundTrack.getDurationMs()).isEqualTo(track.getDurationMs());
         assertThat(foundTrack.getTrackName()).isEqualTo(track.getTrackName());
         assertThat(foundTrack.getArtists()).isEqualTo(track.getArtists());
     }
@@ -225,7 +224,6 @@ public class ChainedAlbumReleaseUploaderTest {
         TrackUploadTargetContainer tracks = TrackUploadTargetContainer.builder()
                 .item(TrackUploadTarget.builder()
                         .trackName("dudeness")
-                        .durationMs(1000L)
                         .isExplicit(true)
                         .hasLyrics(true)
                         .fileId("track.mp3")

@@ -36,7 +36,6 @@ class TrackConverterTest {
         assertThat(result.getIndex()).isEqualTo(expected.getIndex());
         assertThat(result.getDiscNumber()).isEqualTo(expected.getDiscNumber());
         assertThat(result.getArtists()).isEqualTo(expected.getArtists());
-        assertThat(result.getDurationMs()).isEqualTo(expected.getDurationMs());
         assertThat(result.isExplicit()).isEqualTo(expected.isExplicit());
         assertThat(result.hasLyrics()).isEqualTo(expected.hasLyrics());
     }
@@ -78,7 +77,6 @@ class TrackConverterTest {
                 .isExplicit(false)
                 .artists(ArtistContainer.solo(Artist.of("id", "corn wave")))
                 .discNumber(1)
-                .durationMs(1488L)
                 .build();
     }
 }

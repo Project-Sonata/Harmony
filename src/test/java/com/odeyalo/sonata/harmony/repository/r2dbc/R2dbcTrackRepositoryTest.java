@@ -176,6 +176,20 @@ public class R2dbcTrackRepositoryTest {
     }
 
     @Test
+    void shouldSaveIfDurationMsIsNull() {
+        var expected = generateTrackWithoutId();
+
+        expected.setDurationMs(null);
+
+        insertTracks(expected);
+
+        testable.findById(expected.getId())
+                .as(StepVerifier::create)
+                .expectNext(expected)
+                .verifyComplete();
+    }
+
+    @Test
     void shouldReturnAlbum() {
         var expected = generateTrackWithoutId();
 
@@ -292,7 +306,6 @@ public class R2dbcTrackRepositoryTest {
     private static TrackEntity generateTrackWithoutId() {
         return TrackEntity.builder()
                 .name("nothing")
-                .durationMs(1000L)
                 .explicit(true)
                 .hasLyrics(true)
                 .discNumber(1)

@@ -15,13 +15,13 @@ public class TrackDtoFaker {
     public static final int FIRST_DISC_NUMBER = 1;
     TrackDto.TrackDtoBuilder builder = TrackDto.builder();
 
+    @SuppressWarnings("FieldCanBeLocal")
     Faker faker = Faker.instance();
 
     public TrackDtoFaker(int index, int discNumber) {
         trackName(faker.funnyName().name())
                 .index(index)
                 .discNumber(discNumber)
-                .durationMs(faker.random().nextLong())
                 .hasLyrics(faker.random().nextBoolean())
                 .isExplicit(faker.random().nextBoolean())
                 .artists(randomReleaseArtistsDto().get())
@@ -38,11 +38,6 @@ public class TrackDtoFaker {
 
     public TrackDtoFaker trackName(String trackName) {
         builder.trackName(trackName);
-        return this;
-    }
-
-    public TrackDtoFaker durationMs(long durationMs) {
-        builder.durationMs(durationMs);
         return this;
     }
 
