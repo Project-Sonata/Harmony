@@ -1,0 +1,1 @@
+ALTER TABLE tracks ALTER COLUMN duration_ms DROP NOT NULL
