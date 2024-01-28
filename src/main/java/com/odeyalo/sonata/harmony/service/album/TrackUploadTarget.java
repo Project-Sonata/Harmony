@@ -10,7 +10,6 @@ import lombok.Value;
 @Builder
 public class TrackUploadTarget {
     String trackName;
-    long durationMs;
     boolean isExplicit;
     boolean hasLyrics;
     int discNumber;
