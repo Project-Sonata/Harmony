@@ -3,11 +3,13 @@ package com.odeyalo.sonata.harmony.entity;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Data
@@ -51,6 +53,12 @@ public class TrackContainerEntity implements Iterable<SimplifiedTrackEntity> {
 
     public SimplifiedTrackEntity get(int index) {
         return items.get(index);
+    }
+
+    @Nullable
+    public SimplifiedTrackEntity findById(Long targetId) {
+        return items.stream().filter(item -> Objects.equals(item.getId(), targetId)).findFirst()
+                .orElse(null);
     }
 
     @NotNull

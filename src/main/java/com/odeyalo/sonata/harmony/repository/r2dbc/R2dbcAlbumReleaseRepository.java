@@ -3,6 +3,8 @@ package com.odeyalo.sonata.harmony.repository.r2dbc;
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.repository.r2dbc.delegate.R2dbcAlbumReleaseRepositoryDelegate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -16,6 +18,7 @@ public class R2dbcAlbumReleaseRepository implements AlbumReleaseRepository {
     public R2dbcAlbumReleaseRepository(R2dbcAlbumReleaseRepositoryDelegate delegate) {
         this.delegate = delegate;
     }
+
 
     @Override
     public Mono<AlbumReleaseEntity> save(AlbumReleaseEntity albumReleaseEntity) {
@@ -60,5 +63,11 @@ public class R2dbcAlbumReleaseRepository implements AlbumReleaseRepository {
     @Override
     public Mono<Void> deleteAll() {
         return delegate.deleteAll();
+    }
+
+    @Override
+    @NotNull
+    public Mono<AlbumReleaseEntity> updateAlbumDuration(@NotNull Long id, @Nullable Long duration) {
+        return delegate.updateDuration(id, duration);
     }
 }

@@ -2,6 +2,8 @@ package com.odeyalo.sonata.harmony.repository.memory;
 
 import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.repository.AlbumReleaseRepository;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * In memory implementation of AlbumReleaseRepository
- *
+ * <p>
  * Used for tests and local development
  */
 public class InMemoryAlbumReleaseRepository implements AlbumReleaseRepository {
@@ -21,7 +23,7 @@ public class InMemoryAlbumReleaseRepository implements AlbumReleaseRepository {
 
     @Override
     public Mono<AlbumReleaseEntity> save(AlbumReleaseEntity albumReleaseEntity) {
-        if (albumReleaseEntity.getId() == null) {
+        if ( albumReleaseEntity.getId() == null ) {
             albumReleaseEntity.setId(idGenerator.incrementAndGet());
         }
         albumReleases.put(albumReleaseEntity.getId(), albumReleaseEntity);
@@ -70,6 +72,16 @@ public class InMemoryAlbumReleaseRepository implements AlbumReleaseRepository {
     public Mono<Void> deleteAll() {
         albumReleases.clear();
         return Mono.empty();
+    }
+
+    @Override
+    @NotNull
+    public Mono<AlbumReleaseEntity> updateAlbumDuration(@NotNull Long id, @Nullable Long duration) {
+        AlbumReleaseEntity entity = albumReleases.get(id);
+        if ( entity != null ) {
+            entity.setDurationMs(duration);
+        }
+        return Mono.justOrEmpty(entity);
     }
 }
 
