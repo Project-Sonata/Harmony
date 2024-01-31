@@ -3,17 +3,18 @@
   "album_name": "Skinny",
   "release_date": "2014-10-02",
   "release_date_precision": "day",
-  "performers": [
-    {
-      "id": "sonata-id-of-the-artist"
-    }
-  ],
+  "performers": {
+    "artists": [
+      {
+        "id": "sonata-id-of-the-artist",
+        "artist_name": "name-of-the-artist"
+      }
+    ]
+  },
   "tracks": {
-    "total_tracks_count": 2,
     "items": [
       {
         "track_name": "WhereTheTreesMeetTheFreeway",
-        "duration_ms": "4310483",
         "is_explicit": true,
         "has_lyrics": true,
         "disc_number": 1,

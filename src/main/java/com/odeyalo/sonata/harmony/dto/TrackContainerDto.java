@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.*;
@@ -13,24 +14,28 @@ import java.util.stream.Stream;
 import static java.util.Collections.singletonList;
 
 @Data
-@AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
+@AllArgsConstructor(staticName = "of")
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TrackContainerDto implements Iterable<TrackDto> {
-    int totalTracksCount;
     @Singular
     List<TrackDto> items;
 
     public static TrackContainerDto single(TrackDto item) {
-        return of(1, singletonList(item));
+        return of(singletonList(item));
+    }
+
+    public int getTotalTracksCount() {
+        return size();
     }
 
     public int size() {
         return items.size();
     }
 
+    @JsonIgnore
     public boolean isEmpty() {
         return items.isEmpty();
     }
