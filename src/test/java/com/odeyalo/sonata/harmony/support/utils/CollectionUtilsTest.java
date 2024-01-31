@@ -27,6 +27,20 @@ class CollectionUtilsTest {
         assertThat(result).isTrue();
     }
 
+    @Test
+    void shouldReturnTrueIfSourceCollectionContainsTarget() {
+        boolean res = CollectionUtils.containsAll(List.of(1, 2, 3, 4, 5), List.of(1, 2, 5));
+
+        assertThat(res).isTrue();
+    }
+
+    @Test
+    void shouldReturnTrueIfSourceCollectionDoesNotContainTarget() {
+        boolean res = CollectionUtils.containsAll(List.of(1, 2, 3, 4, 5), List.of(1, 2, 6, 5));
+
+        assertThat(res).isFalse();
+    }
+
     @NotNull
     private static Collection<String> prepareCollectionWithNullElement() {
         ArrayList<String> strings = new ArrayList<>();

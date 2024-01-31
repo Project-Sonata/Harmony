@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.harmony.support.utils;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 public class CollectionUtils {
 
@@ -11,5 +12,9 @@ public class CollectionUtils {
             // Collection does not support null values, just return false
             return false;
         }
+    }
+
+    public static <T> boolean containsAll(Collection<T> source, Collection<T> target) {
+        return new HashSet<>(source).containsAll(target);
     }
 }
