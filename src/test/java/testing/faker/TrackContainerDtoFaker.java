@@ -32,11 +32,6 @@ public class TrackContainerDtoFaker {
         return builder.build();
     }
 
-    public TrackContainerDtoFaker totalTracksCount(int totalTracksCount) {
-        builder.totalTracksCount(totalTracksCount);
-        return this;
-    }
-
     public TrackContainerDtoFaker item(TrackDto item) {
         builder.item(item);
         return this;
