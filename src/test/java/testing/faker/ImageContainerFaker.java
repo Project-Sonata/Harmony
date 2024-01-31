@@ -15,7 +15,7 @@ public class ImageContainerFaker {
     Faker faker = Faker.instance();
 
     public ImageContainerFaker() {
-        int imageCount = faker.random().nextInt(0, 2);
+        int imageCount = faker.random().nextInt(1, 2);
 
         for (int i = 0; i < imageCount; i++) {
             Image image = ImageFaker.create().get();
