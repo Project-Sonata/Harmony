@@ -26,4 +26,8 @@ public abstract class UploadedAlbumInfoDtoConverter {
         builder.releaseDateAsString(releaseDateEncoder.encodeReleaseDate(release.getReleaseDate()))
                 .releaseDatePrecision(release.getReleaseDate().getPrecision().name());
     }
+
+    public void setReleaseDateEncoder(ReleaseDateEncoder<String> releaseDateEncoder) {
+        this.releaseDateEncoder = releaseDateEncoder;
+    }
 }
