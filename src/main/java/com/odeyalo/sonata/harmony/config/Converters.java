@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.harmony.config;
 
+import com.odeyalo.sonata.harmony.repository.r2dbc.support.release.FormattedString2ReleaseDateConverter;
 import com.odeyalo.sonata.harmony.support.converter.*;
 import com.odeyalo.sonata.harmony.support.converter.external.*;
 
@@ -47,9 +48,11 @@ public class Converters {
     }
 
     public UploadedAlbumInfoDtoConverter uploadedAlbumInfoDtoConverter() {
-        return new UploadedAlbumInfoDtoConverterImpl(
-               artistContainerDtoConverter(), simplifiedTrackDtoContainerConverter()
+        UploadedAlbumInfoDtoConverterImpl uploadedAlbumInfoDtoConverter = new UploadedAlbumInfoDtoConverterImpl(
+                artistContainerDtoConverter(), simplifiedTrackDtoContainerConverter()
         );
+        uploadedAlbumInfoDtoConverter.setReleaseDateEncoder(new FormattedString2ReleaseDateConverter());
+        return uploadedAlbumInfoDtoConverter;
     }
 
     public SimplifiedTrackDtoContainerConverter simplifiedTrackDtoContainerConverter() {
@@ -63,6 +66,12 @@ public class Converters {
     }
 
     public ArtistContainerDtoConverter artistContainerDtoConverter() {
-        return new ArtistContainerDtoConverterImpl();
+        ArtistContainerDtoConverterImpl artistContainerDtoConverter = new ArtistContainerDtoConverterImpl();
+        artistContainerDtoConverter.setArtistDtoConverter(artistDtoConverter());
+        return artistContainerDtoConverter;
+    }
+
+    private ArtistDtoConverter artistDtoConverter() {
+        return new ArtistDtoConverterImpl();
     }
 }
