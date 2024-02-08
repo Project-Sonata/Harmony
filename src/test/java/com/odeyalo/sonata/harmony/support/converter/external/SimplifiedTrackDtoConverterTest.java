@@ -1,8 +1,6 @@
 package com.odeyalo.sonata.harmony.support.converter.external;
 
 import com.odeyalo.sonata.harmony.model.Artist;
-import com.odeyalo.sonata.harmony.model.ArtistContainer;
-import com.odeyalo.sonata.harmony.model.Track;
 import com.odeyalo.sonata.suite.brokers.events.album.data.SimplifiedTrackDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(MapStructBeansBootstrapConfiguration.class)
 class SimplifiedTrackDtoConverterTest {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     SimplifiedTrackDtoConverter testable;
 
@@ -37,9 +36,10 @@ class SimplifiedTrackDtoConverterTest {
         assertThat(result.getDurationMs()).isEqualTo(track.getDurationMs());
 
         assertThat(result.getArtists()).hasSize(1);
-
+        assertThat(result.getStreamingUri()).isEqualTo(track.getTrackUrl());
         assertThat(result.getArtists()).first().matches(actual ->
                 Objects.equals(artist.getName(), actual.getName()) &&
                         Objects.equals(artist.getSonataId(), actual.getId()));
+
     }
 }

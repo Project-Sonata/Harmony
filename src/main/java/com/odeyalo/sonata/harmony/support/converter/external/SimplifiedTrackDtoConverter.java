@@ -12,6 +12,7 @@ public interface SimplifiedTrackDtoConverter {
 
     @Mapping(target = "name", source = "trackName")
     @Mapping(target = "artists", source = "artists")
+    @Mapping(target = "streamingUri" ,source = "trackUrl")
     SimplifiedTrackDto toSimplifiedTrackDto(Track track);
 
 }
