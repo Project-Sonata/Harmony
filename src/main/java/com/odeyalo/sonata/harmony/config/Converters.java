@@ -49,10 +49,20 @@ public class Converters {
 
     public UploadedAlbumInfoDtoConverter uploadedAlbumInfoDtoConverter() {
         UploadedAlbumInfoDtoConverterImpl uploadedAlbumInfoDtoConverter = new UploadedAlbumInfoDtoConverterImpl(
-                artistContainerDtoConverter(), simplifiedTrackDtoContainerConverter()
+                artistContainerDtoConverter(), simplifiedTrackDtoContainerConverter(), coverImagesConverter()
         );
         uploadedAlbumInfoDtoConverter.setReleaseDateEncoder(new FormattedString2ReleaseDateConverter());
         return uploadedAlbumInfoDtoConverter;
+    }
+
+    public CoverImagesConverter coverImagesConverter() {
+        CoverImagesConverterImpl imagesConverter = new CoverImagesConverterImpl();
+        imagesConverter.setImageCoverConverter(coverImageConverter());
+        return imagesConverter;
+    }
+
+    public CoverImageConverter coverImageConverter() {
+        return new CoverImageConverterImpl();
     }
 
     public SimplifiedTrackDtoContainerConverter simplifiedTrackDtoContainerConverter() {
