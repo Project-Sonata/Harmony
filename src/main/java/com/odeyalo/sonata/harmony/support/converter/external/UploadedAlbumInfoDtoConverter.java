@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring", uses = {
         ArtistContainerDtoConverter.class,
-        SimplifiedTrackDtoContainerConverter.class
+        SimplifiedTrackDtoContainerConverter.class,
+        CoverImagesConverter.class
 }, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class UploadedAlbumInfoDtoConverter {
 
