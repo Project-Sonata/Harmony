@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Value
 @AllArgsConstructor(staticName = "of")
@@ -39,6 +40,10 @@ public class ImageContainer implements Iterable<Image> {
 
     public Image get(int index) {
         return items.get(index);
+    }
+
+    public Stream<Image> stream() {
+        return items.stream();
     }
 
     @NotNull
