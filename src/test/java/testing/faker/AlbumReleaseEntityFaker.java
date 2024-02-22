@@ -1,18 +1,15 @@
 package testing.faker;
 
 import com.github.javafaker.Faker;
-import com.odeyalo.sonata.harmony.entity.AlbumCoverImageContainerEntity;
-import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
-import com.odeyalo.sonata.harmony.entity.ArtistContainerEntity;
-import com.odeyalo.sonata.harmony.entity.TrackContainerEntity;
+import com.odeyalo.sonata.harmony.entity.*;
 import com.odeyalo.sonata.harmony.model.AlbumType;
 import com.odeyalo.sonata.harmony.model.ReleaseDate;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 import static testing.faker.AlbumCoverImageContainerEntityFaker.randomImageEntities;
-import static testing.faker.ReleaseDateFaker.randomReleaseDate;
 import static testing.faker.ArtistContainerEntityFaker.randomArtistEntities;
+import static testing.faker.ReleaseDateFaker.randomReleaseDate;
 import static testing.faker.TrackContainerEntityFaker.randomTrackEntities;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -76,6 +73,11 @@ public class AlbumReleaseEntityFaker {
 
     public AlbumReleaseEntityFaker images(AlbumCoverImageContainerEntity images) {
         builder.images(images);
+        return this;
+    }
+
+    public AlbumReleaseEntityFaker withImage(AlbumCoverImageEntity image) {
+        builder.images(AlbumCoverImageContainerEntity.single(image));
         return this;
     }
 
