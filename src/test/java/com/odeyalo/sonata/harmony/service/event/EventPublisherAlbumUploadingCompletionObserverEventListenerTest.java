@@ -1,6 +1,8 @@
 package com.odeyalo.sonata.harmony.service.event;
 
 import com.odeyalo.sonata.harmony.config.Converters;
+import com.odeyalo.sonata.harmony.entity.AlbumCoverImageEntity;
+import com.odeyalo.sonata.harmony.entity.AlbumReleaseEntity;
 import com.odeyalo.sonata.harmony.repository.memory.InMemoryAlbumReleaseRepository;
 import com.odeyalo.sonata.harmony.service.album.AlbumReleaseService;
 import com.odeyalo.sonata.harmony.service.album.DefaultAlbumReleaseService;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import testing.events.MockSonataEvent;
+import testing.faker.AlbumCoverImageEntityFaker;
 import testing.faker.AlbumReleaseEntityFaker;
 
 import java.net.URI;
@@ -75,6 +78,24 @@ class EventPublisherAlbumUploadingCompletionObserverEventListenerTest {
     }
 
     @Test
+    void shouldSendImagesOnAllEventsOccurred() {
+        AlbumCoverImageEntity image = AlbumCoverImageEntityFaker.create().get();
+        AlbumReleaseEntity albumRelease = AlbumReleaseEntityFaker.create().id(Long.parseLong(ALBUM_ID)).withImage(image).get();
+
+        AlbumUploadingFullyFinishedEventPublisher eventPublisher = Mockito.spy(eventPublisherSupplier.get());
+        EventPublisherAlbumUploadingCompletionObserverEventListener testable = getTestable(
+                List.of(BasicAlbumInfoUploadedEvent.EVENT_TYPE), albumRelease, eventPublisher);
+
+        // send event
+        BasicAlbumInfoUploadedEvent basicAlbumInfoUploadedEvent = getBasicAlbumInfoUploadedEvent();
+        testable.handleEvent(basicAlbumInfoUploadedEvent).block();
+        // expect that images in AlbumUploadingFullyFinishedEvent are present
+        Mockito.verify(eventPublisher, Mockito.times(1))
+                .publishEvent(argThat(imageHasBeenSentMatcher(image)));
+
+    }
+
+    @Test
     void shouldReturnTrueForSupportedEvent() {
         EventPublisherAlbumUploadingCompletionObserverEventListener testable = new EventPublisherAlbumUploadingCompletionObserverEventListener(Collections.emptyList(),
                 eventPublisherSupplier.get(),
@@ -130,6 +151,15 @@ class EventPublisherAlbumUploadingCompletionObserverEventListenerTest {
         return event -> Objects.equals(event.getBody().getAlbumInfo().getId(), ALBUM_ID);
     }
 
+
+    @NotNull
+    private static ArgumentMatcher<AlbumUploadingFullyFinishedEvent> imageHasBeenSentMatcher(AlbumCoverImageEntity image) {
+        return outgoingEvent -> {
+            CoverImages images = outgoingEvent.getBody().getAlbumInfo().getImages();
+            return images.size() == 1 && Objects.equals(images.get(0).getUri(), URI.create(image.getUrl()));
+        };
+    }
+
     @NotNull
     private static Mp3TrackPreviewGeneratedEvent getMp3TrackPreviewGeneratedEvent() {
         return new Mp3TrackPreviewGeneratedEvent(
@@ -149,15 +179,16 @@ class EventPublisherAlbumUploadingCompletionObserverEventListenerTest {
                 AlbumDurationResolvedEvent.EVENT_TYPE,
                 Mp3TrackPreviewGeneratedEvent.EVENT_TYPE
         );
-
-        return getTestable(requiredEvents, eventPublisher);
+        AlbumReleaseEntity albumReleaseEntity = AlbumReleaseEntityFaker.create().id(Long.parseLong(ALBUM_ID)).get();
+        return getTestable(requiredEvents, albumReleaseEntity, eventPublisher);
     }
 
     @NotNull
     private EventPublisherAlbumUploadingCompletionObserverEventListener getTestable(List<String> requiredEvents,
+                                                                                    AlbumReleaseEntity toSave,
                                                                                     AlbumUploadingFullyFinishedEventPublisher eventPublisher) {
         InMemoryAlbumReleaseRepository albumReleaseRepository = new InMemoryAlbumReleaseRepository();
-        albumReleaseRepository.save(AlbumReleaseEntityFaker.create().id(Long.parseLong(ALBUM_ID)).get()).block();
+        albumReleaseRepository.save(toSave).block();
 
         DefaultAlbumReleaseService albumReleaseService = new DefaultAlbumReleaseService(
                 albumReleaseRepository, new Converters().albumReleaseConverter()
