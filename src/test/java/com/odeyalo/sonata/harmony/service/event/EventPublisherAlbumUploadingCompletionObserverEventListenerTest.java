@@ -144,6 +144,18 @@ class EventPublisherAlbumUploadingCompletionObserverEventListenerTest {
 
     @NotNull
     private EventPublisherAlbumUploadingCompletionObserverEventListener getTestable(AlbumUploadingFullyFinishedEventPublisher eventPublisher) {
+        List<String> requiredEvents = List.of(
+                BasicAlbumInfoUploadedEvent.EVENT_TYPE,
+                AlbumDurationResolvedEvent.EVENT_TYPE,
+                Mp3TrackPreviewGeneratedEvent.EVENT_TYPE
+        );
+
+        return getTestable(requiredEvents, eventPublisher);
+    }
+
+    @NotNull
+    private EventPublisherAlbumUploadingCompletionObserverEventListener getTestable(List<String> requiredEvents,
+                                                                                    AlbumUploadingFullyFinishedEventPublisher eventPublisher) {
         InMemoryAlbumReleaseRepository albumReleaseRepository = new InMemoryAlbumReleaseRepository();
         albumReleaseRepository.save(AlbumReleaseEntityFaker.create().id(Long.parseLong(ALBUM_ID)).get()).block();
 
@@ -152,11 +164,7 @@ class EventPublisherAlbumUploadingCompletionObserverEventListenerTest {
         );
 
         return new EventPublisherAlbumUploadingCompletionObserverEventListener(
-                List.of(
-                        BasicAlbumInfoUploadedEvent.EVENT_TYPE,
-                        AlbumDurationResolvedEvent.EVENT_TYPE,
-                        Mp3TrackPreviewGeneratedEvent.EVENT_TYPE
-                ),
+                requiredEvents,
                 eventPublisher,
                 albumReleaseService,
                 uploadAlbumReleaseInfoConverterSupplier.get()
